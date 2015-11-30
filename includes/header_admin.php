@@ -66,6 +66,8 @@
                     <ul class="dropdown-menu">
                          <li><a href="index.php?action=a_receber&page=<?= $dataGet['page'] ?>" target="_blank"><?= RELATORIO_A_RECEBER ?></a></li>
                          <li><a href="index.php?action=vencidos&page=<?= $dataGet['page'] ?>" target="_blank"><?= RELATORIO_A_VENCIDOS ?></a></li>
+                         <li><a href="index.php?action=clientes&page=<?= $dataGet['page'] ?>" target="_blank"><?= CLIENTES ?></a></li>
+                         <li><a href="index.php?action=clientes_atraso&page=<?= $dataGet['page'] ?>" target="_blank"><?= CLIENTES_COM_ATRASO ?></a></li>
                     </ul>
                 </li>
             </ul>
