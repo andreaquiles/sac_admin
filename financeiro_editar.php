@@ -3,7 +3,7 @@ include_once '../sealed/init.php';
 require_once('../sealed/BO/usuarioBO.php');
 require_once('../sealed/BO/financeiroBO.php');
 require_once('../sealed/BO/usuarioBO.php');
-include_once "../lib/utils/funcoes.php";
+include_once "../lib/utils/funcoes.php";   
 /**
  * autenticações 
  */
@@ -15,7 +15,8 @@ if (isset($_SESSION['admin_id'])) {
     require_once('../sealed/BO/revendedorBO.php');
     revendedorBO::checkExpireLogin();
     revendedorBO::checkSession();
-} else {
+} else {     
+    
     header("Location:login.php");
 }
 /**
