@@ -179,7 +179,7 @@ if (FUNCOES::isAjax()) {
                     <tbody>
                         <?php
                         $cont = 1;
-                        if ($dados) {
+                        if ($dados){
                             foreach ($dados as $dado) {
                                 if ($dado->nome) {
                                     $descricao = $dado->nome;

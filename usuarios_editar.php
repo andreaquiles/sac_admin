@@ -23,8 +23,6 @@ if (isset($_SESSION['admin_id'])) {
 /**
  * autenticações 
  */
-
-
 $filterPostUserInfo = array(
     'nome' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
@@ -196,7 +194,7 @@ try {
         $response = array();
         if (empty($data['nome'])) {
             $response['error'][] = 'Preencher nome';
-        } 
+        }
 //        else if ($data['email'] == NULL) {
 //            $response['error'][] = 'E-mail Inválido!';
 //        } 
@@ -318,7 +316,7 @@ try {
                 unset($data['repetir']);
                 if ($datauser['id']) {
                     /**
-                     * atualizar usuario
+                       * (((((((((((((((((( atualizar usuario ))))))))))))))))))))))))))
                      */
                     $users_id = ($datauser['id']);
                     $endereco = serialize($data_endereco);
@@ -326,15 +324,32 @@ try {
                     unset($data['id']);
                     usuarioBO::salvarUsuario($datauser, 'users', $users_id);
                     $id = users_informacaoBO::checkUsersInfo($datauser['id']);
+                     /**
+                     *  Lança no Financeiro
+                     */
+                    if ($data['planos_assinatura_id']) {
+                        $plano = plano_assinaturaBO::getPlanoEspecifico($data['planos_assinatura_id']);
+                        $data_financeiro['valor'] = FUNCOES::formatoDecimalPercentual($plano['valor']);
+                        $data_financeiro['valor']*= (1 + (FUNCOES::formatoDecimalPercentual($plano['percentual_admin']) / 100));
+                        $data_financeiro['users_id'] = $users_id;
+                        $financeiro_id = financeiroBO::getFinanceiroEspecificoPorUser($users_id);
+                        financeiroBO::salvar($data_financeiro, 'financeiro',$financeiro_id['financeiro_id']);
+                    }else{
+                        $data['planos_assinatura_id'] = NULL;
+                    }
+                    /**
+                     * 
+                     */
                     if ($id->users_id) {
                         users_informacaoBO::salvar($data, 'users_informacao', $users_id);
                     } else {
                         users_informacaoBO::salvar($data, 'users_informacao');
                     }
+                   
                     $response['success'][] = 'Usuário atualizado com sucesso!!';
                 } else {
                     /**
-                     * inserir usuario
+                     * (((((((((((((((((( inserir usuario  )))))))))))))))))))))))
                      */
                     $endereco = serialize($data_endereco);
                     $data['endereco'] = $endereco;
@@ -342,19 +357,20 @@ try {
                     unset($datauser['id']);
                     $id = usuarioBO::salvarUsuario($datauser, 'users');
                     $data['users_id'] = $id;
+                    /**
+                     *  lança no Financeiro
+                     */
+                    if ($data['planos_assinatura_id']) {
+                        $plano = plano_assinaturaBO::getPlanoEspecifico($data['planos_assinatura_id']);
+                        $data_financeiro['valor'] = FUNCOES::formatoDecimalPercentual($plano['valor']);
+                        $data_financeiro['valor']*= (1 + (FUNCOES::formatoDecimalPercentual($plano['percentual_admin']) / 100));
+                        $data_financeiro['users_id'] = $id;
+                        financeiroBO::salvar($data_financeiro, 'financeiro');
+                    }else{
+                        $data['planos_assinatura_id'] = NULL;
+                    }
+                    
                     users_informacaoBO::salvar($data, 'users_informacao');
-                    /**
-                     *  Lança no Financeiro
-                     */
-                    $plano = plano_assinaturaBO::getPlanoEspecifico($data['planos_assinatura_id']);
-                    $data_financeiro['valor'] = FUNCOES::formatoDecimalPercentual($plano['valor']);
-                    $data_financeiro['valor']*= (1+(FUNCOES::formatoDecimalPercentual($plano['percentual_admin'])/100));
-                    $data_financeiro['users_id']= $id;
-                    //$data_financeiro['data_vencimento']= $data['data_vencimento'];
-                    financeiroBO::salvar($data_financeiro, 'financeiro');
-                    /**
-                     * 
-                     */
                     $response['success'][] = 'Usuário inserido com sucesso!!';
                 }
                 $response['link'][] = "usuario.php?page=$page";
@@ -420,24 +436,24 @@ if (FUNCOES::isAjax()) {
     </head>
     <body>
         <div id="alerta">
-            <?php
-            if (isset($response)) {
-                if (!empty($response['error'])) {
-                    ?>
+<?php
+if (isset($response)) {
+    if (!empty($response['error'])) {
+        ?>
                     <div class="alert alert-danger fade in" role="alert">
-                        <?php echo implode('<br>', $response['error']); ?>
+                    <?php echo implode('<br>', $response['error']); ?>
                     </div>
-                    <?php
-                }
-                if (!empty($response['success'])) {
-                    ?>
+                        <?php
+                    }
+                    if (!empty($response['success'])) {
+                        ?>
                     <div class="alert alert-success fade in" role="alert">
-                        <?php echo implode('<br>', $response['success']); ?>
+                    <?php echo implode('<br>', $response['success']); ?>
                     </div>
-                    <?php
+                        <?php
+                    }
                 }
-            }
-            ?>
+                ?>
         </div>
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -453,7 +469,7 @@ if (FUNCOES::isAjax()) {
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-        <?php include 'includes/header_admin.php'; ?>
+<?php include 'includes/header_admin.php'; ?>
 
         <div class="container-fluid">
             <ol class="breadcrumb">
@@ -484,42 +500,42 @@ if (FUNCOES::isAjax()) {
                                     <label for="cnpj">Senha</label>
                                     <input type="text" class="form-control" name="passwlogin" placeholder="" value="<?php echo $data['passwlogin']; ?>" >
                                 </div>
-<!--                                <div class="form-group col-sm-3">
-                                    <label for="data_fundacao">Repetir senha</label>
-                                    <input type="password" class="form-control" name="repetir" placeholder="" value="" >
-                                </div>-->
-                                <?php if(isset($_SESSION['admin_id'])){ ?>
-                                <div class="form-group col-sm-2">
-                                    <label for="data_fundacao">Revenda</label>
-                                    <select class="form-control" name="revenda_id">
-                                        <option value="" selected="">Admin</option>
-                                        <?php
-                                        if (is_array($revendas)) {
-                                            foreach ($revendas as $revenda) {
-                                                if ($revenda->nome) {
-                                                    $descricao = $revenda->nome;
-                                                } else {
-                                                    $descricao = $revenda->razao;
+                                <!--                                <div class="form-group col-sm-3">
+                                                                    <label for="data_fundacao">Repetir senha</label>
+                                                                    <input type="password" class="form-control" name="repetir" placeholder="" value="" >
+                                                                </div>-->
+<?php if (isset($_SESSION['admin_id'])) { ?>
+                                    <div class="form-group col-sm-2">
+                                        <label for="data_fundacao">Revenda</label>
+                                        <select class="form-control" name="revenda_id">
+                                            <option value="" selected="">Admin</option>
+    <?php
+    if (is_array($revendas)) {
+        foreach ($revendas as $revenda) {
+            if ($revenda->nome) {
+                $descricao = $revenda->nome;
+            } else {
+                $descricao = $revenda->razao;
+            }
+            ?>
+                                                    <option value="<?= $revenda->revenda_id ?>" <?php echo $data['revenda_id'] == $revenda->revenda_id ? ' selected' : ''; ?>><?= $descricao ?></option>
+                                                    <?php
                                                 }
-                                                ?>
-                                                <option value="<?= $revenda->revenda_id ?>" <?php echo $data['revenda_id'] == $revenda->revenda_id ? ' selected' : ''; ?>><?= $descricao ?></option>
-                                                <?php
                                             }
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                                <?php } elseif(isset($_SESSION['revenda_id'])){ ?>
-                                  <input type="hidden"  name="revenda_id" value="<?= $_SESSION['revenda_id']; ?>">
-                                <?php }  ?>
+                                            ?>
+                                        </select>
+                                    </div>
+<?php } elseif (isset($_SESSION['revenda_id'])) { ?>
+                                    <input type="hidden"  name="revenda_id" value="<?= $_SESSION['revenda_id']; ?>">
+                                <?php } ?>
                                 <div class="form-group col-sm-2">
                                     <label for="data_fundacao">Plano de assinatura</label>
                                     <select class="form-control" name="planos_assinatura_id">
                                         <option value="" selected="">selecione</option>
-                                        <?php
-                                        if (is_array($planos)) {
-                                            foreach ($planos as $plano) {
-                                                ?>
+<?php
+if (is_array($planos)) {
+    foreach ($planos as $plano) {
+        ?>
                                                 <option value="<?= $plano->planos_assinatura_id ?>" <?php echo $data['planos_assinatura_id'] == $plano->planos_assinatura_id ? ' selected' : ''; ?>><?= $plano->descricao ?></option>
                                                 <?php
                                             }
@@ -592,23 +608,23 @@ if (FUNCOES::isAjax()) {
                                     </div>
 
                                     <div id="campos_extras" class="collapse 
-                                    <?php
-                                    echo $data['inscricao_estadual'] ||
-                                    $data['inscricao_municipal'] ||
-                                    $data['razao_social'] ||
-                                    $data['cnpj'] ||
-                                    $data['cpf'] ||
-                                    $data['rg'] ? 'in' : ''
-                                    ?>"
+<?php
+echo $data['inscricao_estadual'] ||
+ $data['inscricao_municipal'] ||
+ $data['razao_social'] ||
+ $data['cnpj'] ||
+ $data['cpf'] ||
+ $data['rg'] ? 'in' : ''
+?>"
                                          aria-labelledby="headingOne">
                                         <div class="panel-body">
                                             <div class="row">
 
-                                                <?php
-                                                /*
-                                                 * Pessoa Física
-                                                 */
-                                                ?>
+<?php
+/*
+ * Pessoa Física
+ */
+?>
                                                 <div class="form-group col-sm-3">
                                                     <label for="tpPessoa">Pessoa Tipo</label>
                                                     <select class="form-control" name="tpPessoa">
@@ -631,11 +647,11 @@ if (FUNCOES::isAjax()) {
                                                     </div>
                                                 </div>
 
-                                                <?php
-                                                /*
-                                                 * Pessoa Jurídica
-                                                 */
-                                                ?>
+<?php
+/*
+ * Pessoa Jurídica
+ */
+?>
                                                 <div class="pJuridica" style="display: none;">
                                                     <div class="form-group col-sm-5">
                                                         <label for="razao_social">Razão social</label>
@@ -673,11 +689,11 @@ if (FUNCOES::isAjax()) {
                                         </div>
                                     </div>
                                 </div>
-                                <?php
-                                /*
-                                 * Endereço
-                                 */
-                                ?>
+<?php
+/*
+ * Endereço
+ */
+?>
 
                                 <?php
                                 /*
@@ -719,13 +735,13 @@ if (FUNCOES::isAjax()) {
             <div class="container">
             </div>
         </div>
-        <?php
-        if ($data['tpPessoa'] == 'J') {
-            echo '<script> $(\'.pFisica\').hide();$(\'.pJuridica\').show();</script>';
-        } else {
-            echo '<script> $(\'.pJuridica\').hide(); $(\'.pFisica\').show();</script>';
-        }
-        ?>
+<?php
+if ($data['tpPessoa'] == 'J') {
+    echo '<script> $(\'.pFisica\').hide();$(\'.pJuridica\').show();</script>';
+} else {
+    echo '<script> $(\'.pJuridica\').hide(); $(\'.pFisica\').show();</script>';
+}
+?>
         <script src="assets/js/gerenciador.min.js"></script>
     </body>
 </html>

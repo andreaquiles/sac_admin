@@ -16,7 +16,6 @@ if (isset($_SESSION['admin_id'])) {
     revendedorBO::checkExpireLogin();
     revendedorBO::checkSession();
 } else {     
-    
     header("Location:login.php");
 }
 /**
