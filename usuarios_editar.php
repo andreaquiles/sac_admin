@@ -46,10 +46,6 @@ $filterPostUserInfo = array(
         'filter' => FILTER_VALIDATE_REGEXP,
         'options' => array("regexp" => "/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/")
     ),
-    'data_vencimento' => array(
-        'filter' => FILTER_VALIDATE_REGEXP,
-        'options' => array("regexp" => "/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/")
-    ),
     'cnpj' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
         'options' => array("regexp" => "/^[0-9]{2}.[0-9]{3}.[0-9]{3}\/[0-9]{4}-[0-9]{2}$/")
@@ -177,11 +173,19 @@ $filterGET = array(
         'filter' => FILTER_VALIDATE_INT
     )
 );
+
+$filterFinanceiro = array(
+    'data_vencimento' => array(
+        'filter' => FILTER_VALIDATE_REGEXP,
+        'options' => array("regexp" => "/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/")
+    ),
+);
 //
 $data_org = filter_input_array(INPUT_POST);
 $datauser = filter_input_array(INPUT_POST, $filterPostUser);
 $data = filter_input_array(INPUT_POST, $filterPostUserInfo);
 $data_endereco = filter_input_array(INPUT_POST, $filterPostEndereco);
+$data_financeiro = filter_input_array(INPUT_POST, $filterFinanceiro);
 $dataGet = filter_input_array(INPUT_GET, $filterGET);
 
 //
@@ -241,7 +245,7 @@ try {
             if ($data['revenda_id'] == '' || empty($data['revenda_id'])) {
                 $data['revenda_id'] = NULL;
             }
-            $data['data_vencimento'] = FUNCOES::formatarDatatoMYSQL($data['data_vencimento']);
+            $data_financeiro['data_vencimento'] = FUNCOES::formatarDatatoMYSQL($data_financeiro['data_vencimento']);
             unset($data['page']);
             if ($data['tpPessoa'] == 'F') {
                 /**
@@ -346,7 +350,7 @@ try {
                     $data_financeiro['valor'] = FUNCOES::formatoDecimalPercentual($plano['valor']);
                     $data_financeiro['valor']*= (1+(FUNCOES::formatoDecimalPercentual($plano['percentual_admin'])/100));
                     $data_financeiro['users_id']= $id;
-                    $data_financeiro['data_vencimento']= $data['data_vencimento'];
+                    //$data_financeiro['data_vencimento']= $data['data_vencimento'];
                     financeiroBO::salvar($data_financeiro, 'financeiro');
                     /**
                      * 
