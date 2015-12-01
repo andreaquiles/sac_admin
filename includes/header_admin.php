@@ -62,6 +62,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Relatórios <span class="caret"></span></a>
                     <ul class="dropdown-menu">
+
                         <?php if (isset($_SESSION['admin_id']) || isset($_SESSION['revenda_id'])) { ?>
                             <li><a href="a_receber.php"><?= RELATORIO_A_RECEBER ?></a></li>
                             <li><a href="vencidos.php"><?= RELATORIO_A_VENCIDOS ?></a></li>
@@ -69,6 +70,9 @@
                         <?php if (isset($_SESSION['admin_id'])) { ?>
                             <li><a href="index.php?action=clientes_atraso&page=<?= $dataGet['page'] ?>" target="_blank"><?= CLIENTES_COM_ATRASO ?></a></li>
                         <?php } ?>
+
+                         
+
                     </ul>
                 </li>
             </ul>

@@ -153,7 +153,7 @@ if (FUNCOES::isAjax()) {
                 <li><a href="./">Home</a></li>
                 <li class="active">Usuários</li>
                 <a class="btn btn-danger btn-xs pull-right" data-toggle="tooltip" title="PDF" 
-                   href="index.php?action=a_receber&page=<?= $dataGet['page'] ?>" target="_blank">
+                   href="index.php?action=clientes" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
             </ol>

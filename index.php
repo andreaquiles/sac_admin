@@ -57,15 +57,9 @@ try {
         exit();
     }elseif ($dataGet['action'] == 'clientes') {
         require_once ( '../lib/fpdf/fpdf.php');
-        $relatorio = "clientes";
-        $dadosExportarPDF = usuarioBO::getListaUsuarios(5000);
-        require_once('../sealed/controler/pdf.php');
-        exit();
-    } elseif ($dataGet['action'] == 'clientes_atraso') {
-        require_once ( '../lib/fpdf/fpdf.php');
         require_once('../sealed/BO/financeiroBO.php');
-        $relatorio = "clientes_atraso";
-        $dadosExportarPDF = financeiroBO::getFinanceiro("vencidos");
+        $relatorio = "clientes";
+        $dadosExportarPDF = usuarioBO::getListaUsuarios();
         require_once('../sealed/controler/pdf.php');
         exit();
     }
