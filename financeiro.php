@@ -171,7 +171,7 @@ if (FUNCOES::isAjax()) {
                             <th>#</th>
                             <th>Usuário</th>
                             <th>Vencimento</th>
-                            <th>Valor</th>
+                             <th>Valor</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -191,19 +191,25 @@ if (FUNCOES::isAjax()) {
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
+
                                     <td style="width:250px;"><?= $descricao ?></td>
                                     <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
                                     <td style="width:80px;"><span class="label label-default">R$ <?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
                                     <td style="width:80px;"><?php echo (strtotime(date("Y-m-d")) > strtotime($dado->data_vencimento)) ? '<span class="label label-danger">vencido</span>' : '' ?></td>
+
+
                                     <td style="width:65px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
                                            href="financeiro_editar.php?id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>">
                                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                         </a>
-                                        <!--                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
-                                                                                   href="financeiro.php?action=excluir&id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>">
-                                                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                                                                </a>-->
+
+                                        
+                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
+                                           href="financeiro.php?action=excluir&id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                        </a>
+
                                     </td>
                                 </tr>
                                 <?php
