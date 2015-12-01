@@ -2,6 +2,7 @@
 include_once '../sealed/init.php';
 require_once('../sealed/BO/usuarioBO.php');
 require_once '../sealed/controler/paginador.php';
+require_once('../sealed/BO/financeiroBO.php');
 include_once "../lib/utils/funcoes.php";
 /**
  * autenticações 
@@ -55,13 +56,13 @@ $dataGet = filter_input_array(INPUT_GET, $filterGET);
 
 
 try {
-    $count = usuarioBO::getListaCount();
+    $count = financeiroBO::getFinanceiroCount("vencidos");
     if (!$dataGet['page']) {
         $dataGet['page'] = 1;
     }
-    
+
     $paginador = new paginador($dataGet['page'], $count, 20, '', array('pesquisa' => $inputGET['pesquisa']));
-    $dadosusers = usuarioBO::getListaUsuarios($paginador->getPage());
+    $dados_receber = financeiroBO::getFinanceiro("vencidos", $paginador->getPage());
     /**
      * action via post EXCLUIR
      */
@@ -82,8 +83,6 @@ try {
             }
         }
     }
-
-   
 } catch (Exception $e) {
     $response['error'][] = $e->getMessage();
 }
@@ -120,8 +119,10 @@ if (FUNCOES::isAjax()) {
         </style>
     </head>
     <body>
-       
+        
+
         <?php include 'includes/header_admin.php'; ?>
+
 
         <div class="container-fluid">
             <div id="alerta">
@@ -151,65 +152,44 @@ if (FUNCOES::isAjax()) {
 
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
-                <li class="active">Usuários</li>
+                <li class="active">Relatórios</li>
+                <li class="active">Vencidos</li>
                 <a class="btn btn-danger btn-xs pull-right" data-toggle="tooltip" title="PDF" 
-                   href="index.php?action=a_receber&page=<?= $dataGet['page'] ?>" target="_blank">
+                   href="index.php?action=vencidos&page=<?= $dataGet['page'] ?>" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
             </ol>
-            <div  style="padding: 5px;">
-                <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
-                    <b>Novo Usuário</b>
-                </a>
-            </div>
+
             <div class="well" style="background-color: #FFF">
                 <table class="table table-hover table-striped" >
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Usuário</th>
-                            <th>Whatsapp</th>
+                            <th>Nome</th>
+                            <th>Valor R$</th>
+                            <th>Vencimento</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $cont = 1;
-                        if ($dadosusers) {
-                            foreach ($dadosusers as $dado) {
-                               
+                        if ($dados_receber) {
+                            foreach ($dados_receber as $dado) {
                                 ?>
-                                <tr <?php //echo $dado['data_encerramento'] ? 'class="danger"' : ''   ?> >
+                                <tr class="danger">
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
-                                    <?= $cont; ?>
+                                        <?= $cont; ?>
                                     </td>
-                                    <td style="width:150px;"><?= $dado->login;  ?></td>
-                                    <td style="width:100px;"><span class="label label-default"><?= $dado->phone; ?></span></td>
-                                    <td style="width:100px;" class="text-right">
-                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
-                                           href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                        </a>
-                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
-                                           href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
-                                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                                        </a>
-                                        <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
-                                           href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-                                        </a>
-                                       
-                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
-                                           href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                        </a>
-                                    </td>
+                                    <td style="width:150px;"><?= $dado->nome; ?></td>
+                                    <td style="width:100px;"><span class="label label-default"><?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
+                                    <td style="width:100px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
                                 </tr>
-                                        <?php
-                                        $cont++;
-                                    }
-                                }
-                                ?>
+                                <?php
+                                $cont++;
+                            }
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>

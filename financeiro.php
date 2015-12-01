@@ -128,32 +128,30 @@ if (FUNCOES::isAjax()) {
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-       <?php include 'includes/header_admin.php'; ?>
-
-
+        <?php include 'includes/header_admin.php'; ?>
         <div class="container-fluid">
             <div id="alerta">
-                    <?php
-                    if (isset($response)) {
-                        if (!empty($response['error'])) {
-                            ?>
+                <?php
+                if (isset($response)) {
+                    if (!empty($response['error'])) {
+                        ?>
                         <div class="alert alert-danger fade in" role="alert">
-                        <?php echo implode('<br>', $response['error']); ?>
+                            <?php echo implode('<br>', $response['error']); ?>
                         </div>
-                            <?php
-                        }
-                        if (!empty($response['success'])) {
-                            ?>
-                        <div class="alert alert-success fade in" role="alert">
-                        <?php echo implode('<br>', $response['success']); ?>
-                        </div>
-                            <?php
-                        }
+                        <?php
                     }
-                    ?>
+                    if (!empty($response['success'])) {
+                        ?>
+                        <div class="alert alert-success fade in" role="alert">
+                            <?php echo implode('<br>', $response['success']); ?>
+                        </div>
+                        <?php
+                    }
+                }
+                ?>
             </div>
             <div id="paginador_info_clientes">
-               <?php echo $paginador->getInfo(); ?>
+                <?php echo $paginador->getInfo(); ?>
             </div>
 
 
@@ -161,11 +159,11 @@ if (FUNCOES::isAjax()) {
                 <li><a href="./">Home</a></li>
                 <li class="active">Financeiro</li>
             </ol>
-            <div  style="padding: 5px;">
+            <ol class="breadcrumb" >
                 <a  href="financeiro_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
                     <b>Novo Financeiro</b>
                 </a>
-            </div>
+            </ol>
             <div class="well" style="background-color: #FFF">
                 <table class="table table-hover table-striped" >
                     <thead>
@@ -180,15 +178,15 @@ if (FUNCOES::isAjax()) {
                     <tbody>
                         <?php
                         $cont = 1;
-                        if ($dados){
+                        if ($dados) {
                             foreach ($dados as $dado) {
-                                if ($dado->nome) {
-                                    $descricao = $dado->nome;
+                                if ($dado->login) {
+                                    $descricao = $dado->login;
                                 } else {
-                                    $descricao = $dado->razao_social;
+                                    $descricao = $dado->nome;
                                 }
                                 ?>
-                                <tr  <?php echo (strtotime(date("Y-m-d")) > strtotime($dado->data_vencimento)) ? 'class="danger"' : 'class="success"'  ?> >
+                                <tr  <?php echo (strtotime(date("Y-m-d")) > strtotime($dado->data_vencimento)) ? 'class="danger"' : '' ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
@@ -196,23 +194,23 @@ if (FUNCOES::isAjax()) {
                                     <td style="width:250px;"><?= $descricao ?></td>
                                     <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
                                     <td style="width:80px;"><span class="label label-default">R$ <?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
-                                    <td style="width:80px;"><?php echo (strtotime(date("Y-m-d")) > strtotime($dado->data_vencimento)) ? '<span class="label label-danger">vencido</span>' : ''  ?></td>
+                                    <td style="width:80px;"><?php echo (strtotime(date("Y-m-d")) > strtotime($dado->data_vencimento)) ? '<span class="label label-danger">vencido</span>' : '' ?></td>
                                     <td style="width:65px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
                                            href="financeiro_editar.php?id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>">
                                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                         </a>
-<!--                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
-                                           href="financeiro.php?action=excluir&id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                        </a>-->
+                                        <!--                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
+                                                                                   href="financeiro.php?action=excluir&id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>">
+                                                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                                                                </a>-->
                                     </td>
                                 </tr>
-                                    <?php
-                                        $cont++;
-                                    }
-                                }
-                                ?>
+                                <?php
+                                $cont++;
+                            }
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>

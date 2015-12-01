@@ -48,13 +48,11 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <?php if (isset($_SESSION['admin_id'])) { ?>
-                            <li><a href="usuarios.php"><?= MENU_CONFIG_USUARIOS ?></a></li>
                             <li><a href="revenda.php"><?= MENU_REVENDAS ?></a></li>
                             <li><a href="usuario.php"><?= MENU_USUARIOS ?></a></li>
                             <li><a href="plano_assinatura.php"><?= MENU_PLANO_ASSINATURA ?></a></li>
                             <li><a href="financeiro.php"><?= MENU_FINANCEIRO ?></a></li>
                         <?php } elseif (isset($_SESSION['revenda_id'])) { ?>
-                            <li><a href="usuarios.php"><?= MENU_CONFIG_USUARIOS ?></a></li>
                             <li><a href="usuario.php"><?= MENU_USUARIOS ?></a></li>
                             <li><a href="plano_assinatura.php"><?= MENU_PLANO_ASSINATURA ?></a></li>
                             <li><a href="financeiro.php"><?= MENU_FINANCEIRO ?></a></li>
@@ -64,10 +62,13 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Relatórios <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                         <li><a href="index.php?action=a_receber&page=<?= $dataGet['page'] ?>" target="_blank"><?= RELATORIO_A_RECEBER ?></a></li>
-                         <li><a href="index.php?action=vencidos&page=<?= $dataGet['page'] ?>" target="_blank"><?= RELATORIO_A_VENCIDOS ?></a></li>
-                         <li><a href="index.php?action=clientes&page=<?= $dataGet['page'] ?>" target="_blank"><?= CLIENTES ?></a></li>
-                         <li><a href="index.php?action=clientes_atraso&page=<?= $dataGet['page'] ?>" target="_blank"><?= CLIENTES_COM_ATRASO ?></a></li>
+                        <?php if (isset($_SESSION['admin_id']) || isset($_SESSION['revenda_id'])) { ?>
+                            <li><a href="a_receber.php"><?= RELATORIO_A_RECEBER ?></a></li>
+                            <li><a href="vencidos.php"><?= RELATORIO_A_VENCIDOS ?></a></li>
+                        <?php } ?>
+                        <?php if (isset($_SESSION['admin_id'])) { ?>
+                            <li><a href="index.php?action=clientes_atraso&page=<?= $dataGet['page'] ?>" target="_blank"><?= CLIENTES_COM_ATRASO ?></a></li>
+                        <?php } ?>
                     </ul>
                 </li>
             </ul>

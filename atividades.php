@@ -184,8 +184,8 @@ if (FUNCOES::isAjax()) {
             <div class="main-content">
                 <div class="breadcrumbs" id="breadcrumbs">
                     <ol class="breadcrumb">
-                        <li><a href="<?= $_SERVER['PHP_SELF'] ?>">admin</a><span class="divider">/</span></li></li>
-                        <li><a href="usuarios.php">usuários</a><span class="divider">/</span></li></li>
+                        <li><a href="index.php">Home</a><span class="divider">/</span></li></li>
+                        <li><a href="usuario.php">Usuários</a><span class="divider">/</span></li></li>
                     <li class="active"><?= $_GET['login'];?></li>
                    
                     </ol>

@@ -99,7 +99,7 @@ $filterPostUser = array(
     ),
     'login' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
-        'options' => array("regexp" => "/^[\w\W]{5,255}$/")
+        'options' => array("regexp" => "/^[\w\W]{1,255}$/")
     ),
     'password' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
@@ -185,6 +185,7 @@ $data = filter_input_array(INPUT_POST, $filterPostUserInfo);
 $data_endereco = filter_input_array(INPUT_POST, $filterPostEndereco);
 $data_financeiro = filter_input_array(INPUT_POST, $filterFinanceiro);
 $dataGet = filter_input_array(INPUT_GET, $filterGET);
+
 
 //
 try {
@@ -316,7 +317,7 @@ try {
                 unset($data['repetir']);
                 if ($datauser['id']) {
                     /**
-                       * (((((((((((((((((( atualizar usuario ))))))))))))))))))))))))))
+                     * (((((((((((((((((( atualizar usuario ))))))))))))))))))))))))))
                      */
                     $users_id = ($datauser['id']);
                     $endereco = serialize($data_endereco);
@@ -324,8 +325,8 @@ try {
                     unset($data['id']);
                     usuarioBO::salvarUsuario($datauser, 'users', $users_id);
                     $id = users_informacaoBO::checkUsersInfo($datauser['id']);
-                     /**
-                     *  Lança no Financeiro
+                    /**
+                     *  lanca no Financeiro
                      */
                     if ($data['planos_assinatura_id']) {
                         $plano = plano_assinaturaBO::getPlanoEspecifico($data['planos_assinatura_id']);
@@ -333,8 +334,8 @@ try {
                         $data_financeiro['valor']*= (1 + (FUNCOES::formatoDecimalPercentual($plano['percentual_admin']) / 100));
                         $data_financeiro['users_id'] = $users_id;
                         $financeiro_id = financeiroBO::getFinanceiroEspecificoPorUser($users_id);
-                        financeiroBO::salvar($data_financeiro, 'financeiro',$financeiro_id['financeiro_id']);
-                    }else{
+                        financeiroBO::salvar($data_financeiro, 'financeiro', $financeiro_id['financeiro_id']);
+                    } else {
                         $data['planos_assinatura_id'] = NULL;
                     }
                     /**
@@ -345,7 +346,7 @@ try {
                     } else {
                         users_informacaoBO::salvar($data, 'users_informacao');
                     }
-                   
+
                     $response['success'][] = 'Usuário atualizado com sucesso!!';
                 } else {
                     /**
@@ -357,6 +358,17 @@ try {
                     unset($datauser['id']);
                     $id = usuarioBO::salvarUsuario($datauser, 'users');
                     $data['users_id'] = $id;
+                    require_once('../sealed/BO/tmpBO.php');
+                    require_once('../sealed/BO/usuario_expiracaoBO.php');
+                    $dataPostLimite['user_id'] = $id;
+                    tmpBO::salvar($dataPostLimite, 'tmp');
+                    $dataPostLimite['limite_auto_resposta'] = 10;
+                    $dataPostLimite['dias_auto_resposta'] = 15;
+                    $dataPostLimite['dias_login'] = 15;
+                    $dataPostLimite['limite_atendentes'] = 2;
+                    $dataPostLimite['data'] = date("Y-m-d H:i:s");
+                    usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao');
+
                     /**
                      *  lança no Financeiro
                      */
@@ -366,10 +378,10 @@ try {
                         $data_financeiro['valor']*= (1 + (FUNCOES::formatoDecimalPercentual($plano['percentual_admin']) / 100));
                         $data_financeiro['users_id'] = $id;
                         financeiroBO::salvar($data_financeiro, 'financeiro');
-                    }else{
+                    } else {
                         $data['planos_assinatura_id'] = NULL;
                     }
-                    
+
                     users_informacaoBO::salvar($data, 'users_informacao');
                     $response['success'][] = 'Usuário inserido com sucesso!!';
                 }
@@ -436,24 +448,24 @@ if (FUNCOES::isAjax()) {
     </head>
     <body>
         <div id="alerta">
-<?php
-if (isset($response)) {
-    if (!empty($response['error'])) {
-        ?>
+            <?php
+            if (isset($response)) {
+                if (!empty($response['error'])) {
+                    ?>
                     <div class="alert alert-danger fade in" role="alert">
-                    <?php echo implode('<br>', $response['error']); ?>
+                        <?php echo implode('<br>', $response['error']); ?>
                     </div>
-                        <?php
-                    }
-                    if (!empty($response['success'])) {
-                        ?>
-                    <div class="alert alert-success fade in" role="alert">
-                    <?php echo implode('<br>', $response['success']); ?>
-                    </div>
-                        <?php
-                    }
+                    <?php
                 }
-                ?>
+                if (!empty($response['success'])) {
+                    ?>
+                    <div class="alert alert-success fade in" role="alert">
+                        <?php echo implode('<br>', $response['success']); ?>
+                    </div>
+                    <?php
+                }
+            }
+            ?>
         </div>
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -469,7 +481,7 @@ if (isset($response)) {
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-<?php include 'includes/header_admin.php'; ?>
+        <?php include 'includes/header_admin.php'; ?>
 
         <div class="container-fluid">
             <ol class="breadcrumb">
@@ -493,7 +505,7 @@ if (isset($response)) {
                                     <input type="text" class="form-control" name="email" placeholder="" value="<?php echo $data['email']; ?>" >
                                 </div>
                                 <div class="form-group col-sm-5">
-                                    <label for="razao_social">Login</label>
+                                    <label for="">Login</label>
                                     <input type="text" class="form-control" name="login" placeholder="" value="<?php echo $data['login']; ?>" >
                                 </div>
                                 <div class="form-group col-sm-4">
@@ -504,20 +516,20 @@ if (isset($response)) {
                                                                     <label for="data_fundacao">Repetir senha</label>
                                                                     <input type="password" class="form-control" name="repetir" placeholder="" value="" >
                                                                 </div>-->
-<?php if (isset($_SESSION['admin_id'])) { ?>
+                                <?php if (isset($_SESSION['admin_id'])) { ?>
                                     <div class="form-group col-sm-2">
                                         <label for="data_fundacao">Revenda</label>
                                         <select class="form-control" name="revenda_id">
                                             <option value="" selected="">Admin</option>
-    <?php
-    if (is_array($revendas)) {
-        foreach ($revendas as $revenda) {
-            if ($revenda->nome) {
-                $descricao = $revenda->nome;
-            } else {
-                $descricao = $revenda->razao;
-            }
-            ?>
+                                            <?php
+                                            if (is_array($revendas)) {
+                                                foreach ($revendas as $revenda) {
+                                                    if ($revenda->nome) {
+                                                        $descricao = $revenda->nome;
+                                                    } else {
+                                                        $descricao = $revenda->razao;
+                                                    }
+                                                    ?>
                                                     <option value="<?= $revenda->revenda_id ?>" <?php echo $data['revenda_id'] == $revenda->revenda_id ? ' selected' : ''; ?>><?= $descricao ?></option>
                                                     <?php
                                                 }
@@ -525,17 +537,17 @@ if (isset($response)) {
                                             ?>
                                         </select>
                                     </div>
-<?php } elseif (isset($_SESSION['revenda_id'])) { ?>
+                                <?php } elseif (isset($_SESSION['revenda_id'])) { ?>
                                     <input type="hidden"  name="revenda_id" value="<?= $_SESSION['revenda_id']; ?>">
                                 <?php } ?>
                                 <div class="form-group col-sm-2">
                                     <label for="data_fundacao">Plano de assinatura</label>
                                     <select class="form-control" name="planos_assinatura_id">
                                         <option value="" selected="">selecione</option>
-<?php
-if (is_array($planos)) {
-    foreach ($planos as $plano) {
-        ?>
+                                        <?php
+                                        if (is_array($planos)) {
+                                            foreach ($planos as $plano) {
+                                                ?>
                                                 <option value="<?= $plano->planos_assinatura_id ?>" <?php echo $data['planos_assinatura_id'] == $plano->planos_assinatura_id ? ' selected' : ''; ?>><?= $plano->descricao ?></option>
                                                 <?php
                                             }
@@ -608,23 +620,23 @@ if (is_array($planos)) {
                                     </div>
 
                                     <div id="campos_extras" class="collapse 
-<?php
-echo $data['inscricao_estadual'] ||
- $data['inscricao_municipal'] ||
- $data['razao_social'] ||
- $data['cnpj'] ||
- $data['cpf'] ||
- $data['rg'] ? 'in' : ''
-?>"
+                                    <?php
+                                    echo $data['inscricao_estadual'] ||
+                                    $data['inscricao_municipal'] ||
+                                    $data['razao_social'] ||
+                                    $data['cnpj'] ||
+                                    $data['cpf'] ||
+                                    $data['rg'] ? 'in' : ''
+                                    ?>"
                                          aria-labelledby="headingOne">
                                         <div class="panel-body">
                                             <div class="row">
 
-<?php
-/*
- * Pessoa Física
- */
-?>
+                                                <?php
+                                                /*
+                                                 * Pessoa Física
+                                                 */
+                                                ?>
                                                 <div class="form-group col-sm-3">
                                                     <label for="tpPessoa">Pessoa Tipo</label>
                                                     <select class="form-control" name="tpPessoa">
@@ -647,11 +659,11 @@ echo $data['inscricao_estadual'] ||
                                                     </div>
                                                 </div>
 
-<?php
-/*
- * Pessoa Jurídica
- */
-?>
+                                                <?php
+                                                /*
+                                                 * Pessoa Jurídica
+                                                 */
+                                                ?>
                                                 <div class="pJuridica" style="display: none;">
                                                     <div class="form-group col-sm-5">
                                                         <label for="razao_social">Razão social</label>
@@ -689,11 +701,11 @@ echo $data['inscricao_estadual'] ||
                                         </div>
                                     </div>
                                 </div>
-<?php
-/*
- * Endereço
- */
-?>
+                                <?php
+                                /*
+                                 * Endereço
+                                 */
+                                ?>
 
                                 <?php
                                 /*
@@ -735,13 +747,13 @@ echo $data['inscricao_estadual'] ||
             <div class="container">
             </div>
         </div>
-<?php
-if ($data['tpPessoa'] == 'J') {
-    echo '<script> $(\'.pFisica\').hide();$(\'.pJuridica\').show();</script>';
-} else {
-    echo '<script> $(\'.pJuridica\').hide(); $(\'.pFisica\').show();</script>';
-}
-?>
+        <?php
+        if ($data['tpPessoa'] == 'J') {
+            echo '<script> $(\'.pFisica\').hide();$(\'.pJuridica\').show();</script>';
+        } else {
+            echo '<script> $(\'.pJuridica\').hide(); $(\'.pFisica\').show();</script>';
+        }
+        ?>
         <script src="assets/js/gerenciador.min.js"></script>
     </body>
 </html>

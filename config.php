@@ -22,7 +22,6 @@ if (isset($_SESSION['admin_id'])) {
 /**
  * autenticações 
  */
-
 $filterGET = array(
     'user_id' => array(
         'filter' => FILTER_VALIDATE_INT
@@ -92,7 +91,12 @@ if ($dataPost) {
             if (empty($response['error'])) {
                 try {
                     $dataPostLimite['data'] = FUNCOES::formatarDatatoMYSQL($dataPostLimite['data']) . ' ' . date('H:i:s');
-                    usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao', $dataPostLimite['user_id']);
+                    $rowGetExpiracao = usuario_expiracaoBO::getExpiracaoEspecifica($dataPostLimite['user_id']);
+                    if ($rowGetExpiracao->users_expiracao_id) {
+                        usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao', $dataPostLimite['user_id']);
+                    }else{
+                       usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao');
+                    }
                     $response['success'][] = 'Registro alterado com sucesso!';
                 } catch (Exception $ex) {
                     $response['error'][] = $ex->getMessage();
@@ -101,14 +105,14 @@ if ($dataPost) {
         }
         $page = $dataPost['page'];
         unset($dataPost['page']);
-        $row = config_BO::getEspecifica($dataPost['user_id']);
+        $row = config_BO::getConfigEspecifico($dataPost['user_id']);
         if (!$row) {
             config_BO::salvar($dataPost, 'config');
         } else {
             config_BO::salvar($dataPost, 'config', $dataPost['user_id']);
         }
         $response['success'][] = 'Configuração efetuada com sucesso!!!';
-        $response['link'] = "usuarios.php?page=" . $page;
+        $response['link'] = "usuario.php?page=" . $page;
     } catch (Exception $ex) {
         $response['error'][] = $ex->getMessage();
     }
@@ -141,6 +145,9 @@ if (FUNCOES::isAjax()) {
         <link href="../public/assets/css/bootstrap-responsive.min.css" rel="stylesheet" />
         <script src="../js/jquery.min.js"></script>
         <script src="../public/assets/js/bootstrap.min.js"></script>
+        <script src="../js/bootstrap-datepicker.js"></script>
+        <script src="../js/locales/bootstrap-datepicker.pt-BR.js"></script>
+        <link href="../css/datepicker3.css" rel="stylesheet" type="text/css"/>
 
         <script>
             $(window).on('beforeunload', function () {// PRESTES A SER DESCARREGADO....
@@ -194,37 +201,7 @@ if (FUNCOES::isAjax()) {
                         </div>
                     </form>
                 </div>
-                <!--            ANDRE AQUILES DAQUI-->
-                <div class="modal hide" id="myModal_2">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">x</button>
-                        <h3>Auto Respostas</h3>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                            <div class="control-group">
-                                <label class="control-label" for="form-field-1">Chave</label>
 
-                                <div class="controls">
-                                    <input type="text" name="chave" class="input-xlarge" placeholder="" required>
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label" for="form-field-1">Resposta</label>
-
-                                <div class="controls">
-                                    <textarea rows="3" class="input-xlarge" name="resposta" required></textarea>
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button class="btn btn-primary">Salvar</button>
-                        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
-                    </div>
-                    </form>
-                </div>
-                <!--        AQUI-->
             </div>
         </div>
 
@@ -260,9 +237,9 @@ if (FUNCOES::isAjax()) {
 
                 <div class="breadcrumbs" id="breadcrumbs">
                     <ul class="breadcrumb">
-                        <li><a href="<?= $_SERVER['PHP_SELF'] ?>">admin</a><span class="divider">/</span></li></li>
-                        <li><a href="usuarios.php">usuários</a><span class="divider">/</span></li></li>
-                        <li class="active">configurações</li>
+                        <li><a href="index.php">Home</a><span class="divider">/</span></li></li>
+                        <li><a href="usuario.php">Usuários</a><span class="divider">/</span></li></li>
+                        <li class="active">Configurações</li>
                     </ul><!--.breadcrumb-->
 
                     <div class="page-content">
@@ -320,7 +297,7 @@ if (FUNCOES::isAjax()) {
                                                 <div class="span2">
                                                     <label>Nº auto respostas</label>
                                                     <div class="controls">
-                                                        <input class="input-block-level" type="text" class="input-block-level" name="limite_auto_resposta"  value="" >
+                                                        <input class="input-block-level" type="text" class="input-block-level" name="limite_auto_resposta"  value="<?= $dado->limite_auto_resposta; ?>" >
                                                     </div>
                                                 </div>
                                                 <div class="span2">
@@ -338,7 +315,7 @@ if (FUNCOES::isAjax()) {
                                                 <div class="span2">
                                                     <label>Data</label>
                                                     <div class="controls">
-                                                        <input type="text" data-toggle="datepicker" class="selector form-control input-block-level" name="data" placeholder="dd/mm/yyyy" value="<?= $dado->date; ?>" >
+                                                        <input type="text" data-toggle="datepicker" class="selector form-control input-block-level" name="data" value="<?= $dado->date; ?>" >
                                                     </div>
                                                 </div>
                                                 <div class="span2">

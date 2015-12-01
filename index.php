@@ -45,14 +45,14 @@ try {
         require_once ( '../lib/fpdf/fpdf.php');
         require_once('../sealed/BO/financeiroBO.php');
         $relatorio = "a_receber";
-        $dadosExportarPDF = financeiroBO::getFinanceiro($relatorio);
+        $dadosExportarPDF = financeiroBO::getFinanceiro($relatorio, 5000);
         require_once('../sealed/controler/pdf.php');
         exit();
     } elseif ($dataGet['action'] == 'vencidos') {
         require_once ( '../lib/fpdf/fpdf.php');
         require_once('../sealed/BO/financeiroBO.php');
         $relatorio = "vencidos";
-        $dadosExportarPDF = financeiroBO::getFinanceiro($relatorio);
+        $dadosExportarPDF = financeiroBO::getFinanceiro($relatorio,5000);
         require_once('../sealed/controler/pdf.php');
         exit();
     }elseif ($dataGet['action'] == 'clientes') {

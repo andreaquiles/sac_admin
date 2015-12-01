@@ -1,11 +1,29 @@
 <?php
 $request = trim(filter_input(INPUT_GET, 'request'));
 $action = filter_input(INPUT_GET, 'action');
+require_once('../../sealed/BO/usuarioBO.php');
+require_once('../../sealed/BO/revendedorBO.php');
+
+/**
+ * autenticações 
+ */
+if (isset($_SESSION['admin_id'])) {
+    usuarioBO::checkExpireLogin();
+    usuarioBO::checkSession();
+} elseif (isset($_SESSION['revenda_id'])) {
+    revendedorBO::checkExpireLogin();
+    revendedorBO::checkSession();
+} else {     
+    header("Location:login.php");
+}
+/**
+ * autenticações 
+ */
 
 switch ($action) {
     case '_usuario' :
         try {
-            require_once('../../sealed/BO/usuarioBO.php');
+            
             $dados = usuarioBO::ajax_autocomplete_usuarios($request);
             if ($dados) {
                 foreach ($dados as $campo) {
