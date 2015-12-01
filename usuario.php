@@ -147,13 +147,11 @@ if (FUNCOES::isAjax()) {
             <div id="paginador_info_clientes">
                 <?php echo $paginador->getInfo(); ?>
             </div>
-
-
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
                 <li class="active">Usuários</li>
                 <a class="btn btn-danger btn-xs pull-right" data-toggle="tooltip" title="PDF" 
-                   href="index.php?action=clientes" target="_blank">
+                   href="index.php?action=usuarios" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
             </ol>

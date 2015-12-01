@@ -55,11 +55,10 @@ try {
         $dadosExportarPDF = financeiroBO::getFinanceiro($relatorio,5000);
         require_once('../sealed/controler/pdf.php');
         exit();
-    }elseif ($dataGet['action'] == 'clientes') {
+    }elseif ($dataGet['action'] == 'usuarios') {
         require_once ( '../lib/fpdf/fpdf.php');
-        require_once('../sealed/BO/financeiroBO.php');
-        $relatorio = "clientes";
-        $dadosExportarPDF = usuarioBO::getListaUsuarios();
+        $relatorio = "usuarios";
+        $dadosExportarPDF = usuarioBO::getListaUsuarios(5000);
         require_once('../sealed/controler/pdf.php');
         exit();
     }
