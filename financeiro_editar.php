@@ -35,6 +35,9 @@ $filter = array(
     ),
     'financeiro_id' => array(
         'filter' => FILTER_VALIDATE_INT
+    ),
+    'page' => array(
+        'filter' => FILTER_VALIDATE_INT
     )
 );
 
@@ -78,6 +81,7 @@ try {
             } else {
                 $page = $data['page'];
             }
+           
 
             if (empty($response['error'])) {
                 $id = ($data['financeiro_id']);

@@ -119,7 +119,7 @@ if (FUNCOES::isAjax()) {
         </style>
     </head>
     <body>
-        
+
 
         <?php include 'includes/header_admin.php'; ?>
 
@@ -154,10 +154,24 @@ if (FUNCOES::isAjax()) {
                 <li><a href="./">Home</a></li>
                 <li class="active">Relatórios</li>
                 <li class="active">Vencidos</li>
-                <a class="btn btn-danger btn-xs pull-right" data-toggle="tooltip" title="PDF" 
+               
+            </ol>
+            <ol class="breadcrumb" >
+                <a  href="financeiro_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
+                    <b>Novo Financeiro</b>
+                </a>
+                <a class="btn btn-danger" data-toggle="tooltip" title="PDF" 
                    href="index.php?action=vencidos&page=<?= $dataGet['page'] ?>" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
+                 <div class="form-group col-sm-2 pull-right">
+                    <select class="form-control" name="planos_assinatura_id">
+                        <option value="financeiro">Todos</option>
+                        <option value="a_receber">A Receber</option>
+                        <option value="vencidos" selected="">Vencidos</option>
+                    </select>
+                </div>
+                
             </ol>
 
             <div class="well" style="background-color: #FFF">
@@ -165,9 +179,9 @@ if (FUNCOES::isAjax()) {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Nome</th>
-                            <th>Valor R$</th>
+                            <th>Usúario</th>
                             <th>Vencimento</th>
+                            <th>Valor R$</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -181,9 +195,15 @@ if (FUNCOES::isAjax()) {
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
-                                    <td style="width:150px;"><?= $dado->nome; ?></td>
-                                    <td style="width:100px;"><span class="label label-default"><?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
-                                    <td style="width:100px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
+                                    <td style="width:250px;"><?= $dado->login; ?></td>
+                                    <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
+                                    <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
+                                    <td style="width:65px;" class="text-right">
+                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
+                                           href="financeiro_editar.php?id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                        </a>
+                                    </td>
                                 </tr>
                                 <?php
                                 $cont++;
@@ -207,5 +227,10 @@ if (FUNCOES::isAjax()) {
             </div>
         </div>
         <script src="assets/js/gerenciador.min.js"></script>
+        <script>
+            $('select').on('change', function () {
+                location.href = this.value+'.php';
+            });
+        </script>
     </body>
 </html>

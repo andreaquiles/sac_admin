@@ -61,6 +61,13 @@ try {
         $dadosExportarPDF = usuarioBO::getListaUsuarios(5000);
         require_once('../sealed/controler/pdf.php');
         exit();
+    }elseif ($dataGet['action'] == 'usuarios_atrazo') {
+        require_once ( '../lib/fpdf/fpdf.php');
+        require_once('../sealed/BO/financeiroBO.php');
+        $relatorio = "usuarios_atrazo";
+        $dadosExportarPDF = financeiroBO::getFinanceiro("vencidos",5000);
+        require_once('../sealed/controler/pdf.php');
+        exit();
     }
 } catch (Exception $ex) {
     $response['error'][] = $ex->getMessage();
@@ -87,7 +94,7 @@ if (FUNCOES::isAjax()) {
         <link href="../public/assets/css/" rel="stylesheet" />
         <link href="../public/assets/css/bootstrap.min.css" rel="stylesheet" />
         <link href="../public/assets/css/bootstrap-responsive.min.css" rel="stylesheet" />
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+        <script src="assets/js/jquery.min.js"></script>
         <script src="../public/assets/js/bootstrap.min.js"></script>
         <script>
             $(window).on('beforeunload', function () {// PRESTES A SER DESCARREGADO....

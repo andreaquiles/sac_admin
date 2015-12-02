@@ -1,8 +1,8 @@
 <?php
 include_once '../sealed/init.php';
 require_once('../sealed/BO/usuarioBO.php');
-require_once('../sealed/BO/plano_assinaturaBO.php');
 require_once '../sealed/controler/paginador.php';
+require_once('../sealed/BO/financeiroBO.php');
 include_once "../lib/utils/funcoes.php";
 /**
  * autenticações 
@@ -21,7 +21,6 @@ if (isset($_SESSION['admin_id'])) {
 /**
  * autenticações 
  */
-
 $filterGET = array(
     'action' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
@@ -33,7 +32,7 @@ $filterGET = array(
     'page' => array(
         'filter' => FILTER_VALIDATE_INT
     ),
-    'revenda_id' => array(
+    'id' => array(
         'filter' => FILTER_VALIDATE_INT
     )
 );
@@ -41,7 +40,7 @@ $filterGET = array(
 $argsPost = array(
     'action' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
-        'options' => array("regexp" => "/^(excluir|imprimir|exportar_xls)$/")
+        'options' => array("regexp" => "/^(excluir)$/")
     ),
     'ids' => array(
         'filter' => FILTER_VALIDATE_INT,
@@ -57,12 +56,13 @@ $dataGet = filter_input_array(INPUT_GET, $filterGET);
 
 
 try {
-    $count = plano_assinaturaBO::getListaCount();
+    $count = financeiroBO::getFinanceiroCount("vencidos");
     if (!$dataGet['page']) {
         $dataGet['page'] = 1;
     }
-    $paginador = new paginador($dataGet['page'], $count, 20, '');
-    $dados = plano_assinaturaBO::getLista($paginador->getPage());
+
+    $paginador = new paginador($dataGet['page'], $count, 20, '', array('pesquisa' => $inputGET['pesquisa']));
+    $dados_receber = financeiroBO::getFinanceiro("vencidos", $paginador->getPage());
     /**
      * action via post EXCLUIR
      */
@@ -70,22 +70,18 @@ try {
         if ($dataGet['action'] == 'excluir') {
             if (isset($dataGet['id'])) {
                 try {
-                    $result = plano_assinaturaBO::deletar($dataGet['id']);
-                    if ($result == TRUE) {
-                        $response['success'][] = 'Plano de assinatura excluído com sucesso!';
-                        $response['link'] = 'plano_assinatura.php?page=' . $dataGet['page'];
+                    $result = usuarioBO::deletar($dataGet['id']);
+                    if ($result == true) {
+                        $response['success'][] = 'Usuário excluído com sucesso!';
+                        $response['link'] = 'usuario.php?page=' . $dataGet['page'];
                     } else {
-                        $response['error'][] = "Plano de assinatura já está vinculado a um usuário !!";
+                        //$response['error'][] = "Revenda já está vinculado a uma cotação !!";
                     }
                 } catch (Exception $err) {
                     $response['error'][] = $err->getMessage();
                 }
             }
         }
-    }
-
-    if (!$dataGet['page']) {
-        $dataGet['page'] = 1;
     }
 } catch (Exception $e) {
     $response['error'][] = $e->getMessage();
@@ -123,23 +119,7 @@ if (FUNCOES::isAjax()) {
         </style>
     </head>
     <body>
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
-                        <h4 class="modal-title">Aguarde</h4>
-                    </div>
-                    <div class="modal-body">
-                        ...
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-
         <?php include 'includes/header_admin.php'; ?>
-
-
         <div class="container-fluid">
             <div id="alerta">
                 <?php
@@ -168,46 +148,51 @@ if (FUNCOES::isAjax()) {
 
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
-                <li class="active">Planos de assinatura</li>
+                <li class="active">Usuários</li>
+               
             </ol>
-             <ol class="breadcrumb" >
-                <a  href="plano_assinatura_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
-                    <b>Novo Plano</b>
+            <ol class="breadcrumb" >
+                <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
+                    <b>Novo Usuário</b>
                 </a>
-             </ol>
+                <a class="btn btn-danger" data-toggle="tooltip" title="PDF" 
+                   href="index.php?action=usuarios_atrazo&page=<?= $dataGet['page'] ?>" target="_blank">
+                    <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
+                </a>
+<!--                 <div class="form-group col-sm-2 pull-right">
+                    <select class="form-control" name="planos_assinatura_id">
+                        <option value="financeiro">Todos</option>
+                        <option value="a_receber">A Receber</option>
+                        <option value="vencidos" selected="">Vencidos</option>
+                    </select>
+                </div>-->
+                
+            </ol>
+
             <div class="well" style="background-color: #FFF">
                 <table class="table table-hover table-striped" >
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Descrição</th>
-                            <th>Valor</th>
+                            <th>Usúario</th>
+                            <th>Vencimento</th>
+                            <th>Valor R$</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $cont = 1;
-                        if ($dados) {
-
-                            foreach ($dados as $dado) {
+                        if ($dados_receber) {
+                            foreach ($dados_receber as $dado) {
                                 ?>
-                                <tr <?php //echo $dado['data_encerramento'] ? 'class="danger"' : ''     ?> >
+                                <tr class="danger">
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
-                                    <td style="width:150px;"><?= $dado->descricao; ?></td>
-                                    <td style="width:100px;"><span class="label label-default">R$ <?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
-                                    <td style="width:65px;" class="text-right">
-                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
-                                           href="plano_assinatura_editar.php?id=<?= $dado->planos_assinatura_id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                        </a>
-                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
-                                           href="plano_assinatura.php?action=excluir&id=<?= $dado->planos_assinatura_id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                        </a>
-                                    </td>
+                                    <td style="width:250px;"><?= $dado->login; ?></td>
+                                    <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
+                                    <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
                                 </tr>
                                 <?php
                                 $cont++;
@@ -231,5 +216,10 @@ if (FUNCOES::isAjax()) {
             </div>
         </div>
         <script src="assets/js/gerenciador.min.js"></script>
+        <script>
+            $('select').on('change', function () {
+                location.href = this.value+'.php';
+            });
+        </script>
     </body>
 </html>

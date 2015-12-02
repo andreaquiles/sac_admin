@@ -154,11 +154,13 @@ if (FUNCOES::isAjax()) {
                 <li><a href="./">Home</a></li>
                 <li class="active">Revenda</li>
             </ol>
-            <div  style="padding: 5px;">
-                <a  href="revenda_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
-                    <b>Nova Revenda</b>
-                </a>
-            </div>
+            <ol class="breadcrumb" >
+                <div  style="padding: 5px;">
+                    <a  href="revenda_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
+                        <b>Nova Revenda</b>
+                    </a>
+                </div>
+            </ol>
             <div class="well" style="background-color: #FFF">
                 <table class="table table-hover table-striped" >
                     <thead>
@@ -180,7 +182,7 @@ if (FUNCOES::isAjax()) {
                                     $descricao = $dado->razao;
                                 }
                                 ?>
-                                <tr <?php //echo $dado['data_encerramento'] ? 'class="danger"' : ''   ?> >
+                                <tr <?php //echo $dado['data_encerramento'] ? 'class="danger"' : ''    ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
