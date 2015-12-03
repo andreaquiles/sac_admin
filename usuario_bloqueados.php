@@ -2,7 +2,6 @@
 include_once '../sealed/init.php';
 require_once('../sealed/BO/usuarioBO.php');
 require_once '../sealed/controler/paginador.php';
-require_once('../sealed/BO/financeiroBO.php');
 include_once "../lib/utils/funcoes.php";
 /**
  * autenticações 
@@ -56,13 +55,13 @@ $dataGet = filter_input_array(INPUT_GET, $filterGET);
 
 
 try {
-    $count = financeiroBO::getFinanceiroCount("vencidos");
+    $count = usuarioBO::getListaBloqueadosCount();
     if (!$dataGet['page']) {
         $dataGet['page'] = 1;
     }
 
     $paginador = new paginador($dataGet['page'], $count, 20, '', array('pesquisa' => $inputGET['pesquisa']));
-    $dados_receber = financeiroBO::getFinanceiro("vencidos", $paginador->getPage());
+    $dadosusers = usuarioBO::getListaUsuariosBloqueados($paginador->getPage());
     /**
      * action via post EXCLUIR
      */
@@ -116,100 +115,101 @@ if (FUNCOES::isAjax()) {
                 position: relative;
                 width: 100%;
             }
-        </style>
-    </head>
-    <body>
-
-
-        <?php include 'includes/header_admin.php'; ?>
-
-
-        <div class="container-fluid">
-            <div id="alerta">
-                <?php
+                </style>
+            </head>
+            <body>
+                  <?php include 'includes/header_admin.php'; ?>
+                        <div class="container-fluid">
+                            <div id="alerta">
+                   <?php
                 if (isset($response)) {
                     if (!empty($response['error'])) {
                         ?>
-                        <div class="alert alert-danger fade in" role="alert">
-                            <?php echo implode('<br>', $response['error']); ?>
-                        </div>
-                        <?php
-                    }
-                    if (!empty($response['success'])) {
-                        ?>
-                        <div class="alert alert-success fade in" role="alert">
-                            <?php echo implode('<br>', $response['success']); ?>
-                        </div>
-                        <?php
-                    }
+                <div class="alert alert-danger fade in" role="alert">
+                <?php echo implode('<br>', $response['error']); ?>
+                </div>
+                    <?php
                 }
-                ?>
+                if (!empty($response['success'])) {
+                    ?>
+                <div class="alert alert-success fade in" role="alert">
+                <?php echo implode('<br>', $response['success']); ?>
+                </div>
+                    <?php
+                }
+            }
+            ?>
             </div>
             <div id="paginador_info_clientes">
-                <?php echo $paginador->getInfo(); ?>
+             <?php echo $paginador->getInfo(); ?>
             </div>
-
-
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
-                <li class="active">Relatórios</li>
-                <li class="active">Vencidos</li>
-               
-            </ol>
-            <ol class="breadcrumb" >
-                <a  href="financeiro_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
-                    <b>Novo Financeiro</b>
-                </a>
-                <a class="btn btn-danger" data-toggle="tooltip" title="PDF" 
-                   href="index.php?action=vencidos&page=<?= $dataGet['page'] ?>" target="_blank">
-                    <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
-                </a>
-                 <div class="form-group col-sm-2 pull-right">
-                    <select class="form-control" name="planos_assinatura_id">
-                        <option value="financeiro">Todos</option>
-                        <option value="a_receber">A Receber</option>
-                        <option value="vencidos" selected="">Vencidos</option>
-                    </select>
-                </div>
+                <li class="active">Usuários</li>
                 
             </ol>
-
+            <ol class="breadcrumb" >
+                    <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
+                        <b>Novo Usuário</b>
+                    </a>
+                <a class="btn btn-danger" data-toggle="tooltip" title="PDF" 
+                   href="index.php?action=usuarios_bloqueados" target="_blank">
+                    <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
+                </a>
+                <div class="form-group col-sm-2 pull-right">
+                    <select class="form-control" name="planos_assinatura_id">
+                        <option value="usuario">Todos</option>
+                        <option value="usuario_atraso">Usuários com atraso</option>
+                        <option value="usuario_bloqueados" selected="">Usuários bloqueados</option>
+                    </select>
+                </div>
+            </ol>
             <div class="well" style="background-color: #FFF">
                 <table class="table table-hover table-striped" >
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Usúario</th>
-                            <th>Vencimento</th>
-                            <th>Valor R$</th>
+                            <th>Usuário</th>
+                            <th>Whatsapp</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
-                        $cont = 1;
-                        if ($dados_receber) {
-                            foreach ($dados_receber as $dado) {
-                                ?>
-                                <tr class="danger">
+                                <?php
+                                $cont = 1;
+                                if ($dadosusers) {
+                                    foreach ($dadosusers as $dado) {?>
+                                <tr <?php echo $dado->bloqueado ? 'class="danger"' : ''   ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
-                                    <td style="width:250px;"><?= $dado->login; ?></td>
-                                    <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
-                                    <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
-                                    <td style="width:65px;" class="text-right">
+                                    <td style="width:150px;"><?= $dado->login; ?></td>
+                                    <td style="width:100px;"><span class="label label-default"><?= $dado->phone; ?></span></td>
+                                    <td style="width:100px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
-                                           href="financeiro_editar.php?id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>&pgname=vencidos">
+                                           href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario_bloqueados">
                                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                        </a>
+                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
+                                           href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
+                                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                                        </a>
+                                        <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
+                                           href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
+                                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                                        </a>
+
+                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
+                                           href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                         </a>
                                     </td>
                                 </tr>
-                                <?php
-                                $cont++;
+                                    <?php
+                                    $cont++;
+                                }
                             }
-                        }
-                        ?>
+                            ?>
                     </tbody>
                 </table>
             </div>
@@ -220,17 +220,15 @@ if (FUNCOES::isAjax()) {
             </div>
         </div>
 
-
-
         <div id="footer" class="navbar-default">
             <div class="container">
             </div>
         </div>
         <script src="assets/js/gerenciador.min.js"></script>
         <script>
-            $('select').on('change', function () {
-                location.href = this.value+'.php';
-            });
+         $('select').on('change', function () {
+            location.href = this.value+'.php';
+         });
         </script>
     </body>
 </html>

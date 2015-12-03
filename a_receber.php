@@ -196,7 +196,7 @@ if (FUNCOES::isAjax()) {
                                     <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
                                     <td style="width:65px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
-                                           href="financeiro_editar.php?id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>">
+                                           href="financeiro_editar.php?id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>&pgname=a_receber">
                                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                         </a>
                                     </td>

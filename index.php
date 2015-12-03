@@ -61,11 +61,18 @@ try {
         $dadosExportarPDF = usuarioBO::getListaUsuarios(5000);
         require_once('../sealed/controler/pdf.php');
         exit();
-    }elseif ($dataGet['action'] == 'usuarios_atrazo') {
+    }elseif ($dataGet['action'] == 'usuarios_atraso') {
         require_once ( '../lib/fpdf/fpdf.php');
         require_once('../sealed/BO/financeiroBO.php');
-        $relatorio = "usuarios_atrazo";
+        $relatorio = "usuarios_atraso";
         $dadosExportarPDF = financeiroBO::getFinanceiro("vencidos",5000);
+        require_once('../sealed/controler/pdf.php');
+        exit();
+    }elseif ($dataGet['action'] == 'usuarios_bloqueados') {
+        require_once ( '../lib/fpdf/fpdf.php');
+        require_once('../sealed/BO/financeiroBO.php');
+        $relatorio = "usuarios_bloqueados";
+        $dadosExportarPDF = usuarioBO::getListaUsuariosBloqueados(5000);
         require_once('../sealed/controler/pdf.php');
         exit();
     }

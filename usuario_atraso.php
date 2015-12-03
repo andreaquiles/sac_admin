@@ -149,34 +149,30 @@ if (FUNCOES::isAjax()) {
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
                 <li class="active">Usuários</li>
-               
             </ol>
             <ol class="breadcrumb" >
                 <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
                     <b>Novo Usuário</b>
                 </a>
                 <a class="btn btn-danger" data-toggle="tooltip" title="PDF" 
-                   href="index.php?action=usuarios_atrazo&page=<?= $dataGet['page'] ?>" target="_blank">
+                   href="index.php?action=usuarios_atraso&page=<?= $dataGet['page'] ?>" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
-<!--                 <div class="form-group col-sm-2 pull-right">
+                <div class="form-group col-sm-2 pull-right">
                     <select class="form-control" name="planos_assinatura_id">
-                        <option value="financeiro">Todos</option>
-                        <option value="a_receber">A Receber</option>
-                        <option value="vencidos" selected="">Vencidos</option>
+                        <option value="usuario">Todos</option>
+                        <option value="usuario_atraso"  selected="">Usuários com atraso</option>
+                        <option value="usuario_bloqueados">Usuários bloqueados</option>
                     </select>
-                </div>-->
-                
+                </div>
             </ol>
-
             <div class="well" style="background-color: #FFF">
                 <table class="table table-hover table-striped" >
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Usúario</th>
-                            <th>Vencimento</th>
-                            <th>Valor R$</th>
+                            <th>Whatsapp</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -190,9 +186,27 @@ if (FUNCOES::isAjax()) {
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
-                                    <td style="width:250px;"><?= $dado->login; ?></td>
-                                    <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
-                                    <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
+                                    <td style="width:150px;"><?= $dado->login; ?></td>
+                                    <td style="width:100px;"><span class="label label-default"><?= ($dado->phone); ?></span></td>
+                                    <td style="width:100px;" class="text-right">
+                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
+                                           href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario_atraso">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                        </a>
+                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
+                                           href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
+                                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                                        </a>
+                                        <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
+                                           href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
+                                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                                        </a>
+
+                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
+                                           href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                        </a>
+                                    </td>
                                 </tr>
                                 <?php
                                 $cont++;
@@ -218,7 +232,7 @@ if (FUNCOES::isAjax()) {
         <script src="assets/js/gerenciador.min.js"></script>
         <script>
             $('select').on('change', function () {
-                location.href = this.value+'.php';
+                location.href = this.value + '.php';
             });
         </script>
     </body>

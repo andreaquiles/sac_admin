@@ -52,6 +52,9 @@ $filterGET = array(
     ),
     'id' => array(
         'filter' => FILTER_VALIDATE_INT
+    ),
+     'pgname' => array(
+        'filter' => FILTER_SANITIZE_STRING
     )
 );
 //
@@ -101,7 +104,8 @@ try {
                     financeiroBO::salvar($data, 'financeiro');
                     $response['success'][] = 'Financeiro inserido com sucesso!!';
                 }
-                $response['link'][] = "financeiro.php?page=$page";
+                $pagina = $_POST['pgname'].'.php';
+                $response['link'][] = "$pagina?page=$page";
             }
         }
     }
@@ -205,6 +209,7 @@ if (FUNCOES::isAjax()) {
                         <div class="col-sm-12">
                             <input type="hidden"  name="financeiro_id" value="<?php echo $dataGet['id']; ?>">
                             <input type="hidden" name="page" value="<?php echo $dataGet['page']; ?>">
+                            <input type="hidden" name="pgname" value="<?php echo $dataGet['pgname']; ?>">
                             <div class="row">
                                 <div class="form-group col-sm-3">
                                     <label for="cnpj">Valor R$</label>

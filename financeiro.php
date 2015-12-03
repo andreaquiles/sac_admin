@@ -114,19 +114,7 @@ if (FUNCOES::isAjax()) {
         </style>
     </head>
     <body>
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
-                        <h4 class="modal-title">Aguarde</h4>
-                    </div>
-                    <div class="modal-body">
-                        ...
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+
 
         <?php include 'includes/header_admin.php'; ?>
         <div class="container-fluid">
@@ -179,7 +167,7 @@ if (FUNCOES::isAjax()) {
                             <th>#</th>
                             <th>Usuário</th>
                             <th>Vencimento</th>
-                            <th>Valor</th>
+                            <th>Valor R$</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -201,11 +189,10 @@ if (FUNCOES::isAjax()) {
                                     </td>
                                     <td style="width:250px;"><?= $descricao ?></td>
                                     <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
-                                    <td style="width:80px;"><span class="label label-default">R$ <?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
-        <!--                                    <td style="width:80px;"><?php //echo (strtotime(date("Y-m-d")) > strtotime($dado->data_vencimento)) ? '<span class="label label-danger">vencido</span>' : ''   ?></td>-->
+                                    <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
                                     <td style="width:65px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
-                                           href="financeiro_editar.php?id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>">
+                                           href="financeiro_editar.php?id=<?= $dado->financeiro_id; ?>&page=<?= $dataGet['page']; ?>&pgname=financeiro">
                                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                         </a>
                                     </td>
@@ -225,12 +212,12 @@ if (FUNCOES::isAjax()) {
             </div>
         </div>
         <div id="footer" class="navbar-default">
-           
+
         </div>
         <script src="assets/js/gerenciador.min.js"></script>
         <script>
             $('select').on('change', function () {
-                location.href = this.value+'.php';
+                location.href = this.value + '.php';
             });
         </script>
     </body>

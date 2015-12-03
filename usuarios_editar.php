@@ -108,6 +108,9 @@ $filterPostUser = array(
     'passwlogin' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
         'options' => array("regexp" => "/^[\w\W]{5,255}$/")
+    ),
+    'bloqueado' => array(
+        'filter' => FILTER_VALIDATE_INT
     )
 );
 
@@ -169,6 +172,9 @@ $filterGET = array(
     ),
     'id' => array(
         'filter' => FILTER_VALIDATE_INT
+    ),
+    'pgname' => array(
+        'filter' => FILTER_SANITIZE_STRING
     )
 );
 
@@ -385,7 +391,8 @@ try {
                     users_informacaoBO::salvar($data, 'users_informacao');
                     $response['success'][] = 'Usuário inserido com sucesso!!';
                 }
-                $response['link'][] = "usuario.php?page=$page";
+                $pagina = $_POST['pgname'].'.php';
+                $response['link'][] = "$pagina?page=$page";
             }
         }
     }
@@ -467,19 +474,7 @@ if (FUNCOES::isAjax()) {
             }
             ?>
         </div>
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
-                        <h4 class="modal-title">Aguarde</h4>
-                    </div>
-                    <div class="modal-body">
-                        ...
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+
 
         <?php include 'includes/header_admin.php'; ?>
 
@@ -498,6 +493,7 @@ if (FUNCOES::isAjax()) {
                                 <input type="hidden"  name="id" value="<?php echo $dataGet['id']; ?>">
                                 <input type="hidden"  name="users_id" value="<?php echo $dataGet['id']; ?>">
                                 <input type="hidden" name="page" value="<?php echo $dataGet['page']; ?>">
+                                <input type="hidden" name="pgname" value="<?php echo $dataGet['pgname']; ?>">
                             </div>
                             <div class="row">
                                 <div class="form-group col-sm-3">
@@ -559,6 +555,13 @@ if (FUNCOES::isAjax()) {
                                     <label for="data_vencimento">Vencimento</label>
                                     <input type="text" data-toggle="datepicker" class="form-control" name="data_vencimento" value="<?= $data['data_vencimento'] ?>" >
                                 </div>
+                                <!--                                <div class="form-group col-sm-6" style="margin-top:1.2em;">
+                                                                    <div class="checkbox pull-right">
+                                                                        <label>
+                                                                            <input type="checkbox" value="1" name="bloqueado" <?= $data['bloqueado'] ? "checked" : "" ?>><span style="" class="label label-danger">Bloquear</span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>-->
                             </div>
                             <div class="panel panel-default">
                                 <h4 class="panel-title" style="padding: 4px;">
@@ -732,6 +735,13 @@ if (FUNCOES::isAjax()) {
                         </div>
 
                         <div class="text-right">
+                            <div class="form-group" style="margin-top:1.2em;">
+                                <div class="checkbox pull-left">
+                                    <label>
+                                        <input type="checkbox" value="1"  name="bloqueado" <?= $data['bloqueado'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-danger">Bloqueado</span>
+                                    </label>
+                                </div>
+                            </div>
                             <a href="<?php echo ''; ?>" class="btn btn-danger">Cancelar</a>
                             <button type="submit" class="btn btn-success">Salvar</button>
                         </div>

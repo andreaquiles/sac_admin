@@ -9,10 +9,6 @@ $filter = array(
         'filter' => FILTER_VALIDATE_REGEXP,
         'options' => array("regexp" => "/^[\w\W]{1,255}$/")
     ),
-    'senha' => array(
-        'filter' => FILTER_VALIDATE_REGEXP,
-        'options' => array("regexp" => "/^[\w\W]{1,255}$/")
-    ),
     'tipo' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
         'options' => array("regexp" => "/^[\w\W]{1,30}$/")
@@ -24,13 +20,15 @@ if ($dataPost) {
     unset($dataPost['tipo']);
     try {
         if ($tipo == "admin") {
-            usuarioBO::getLoginAdmin($dataPost);
+            $dado = usuarioBO::getAdminEmail($dataPost);
             $response['success'][] = "aguarde...";
-            $response['link'][] = "index.php";
+            $criptografia = FUNCOES::cryptografar($dado->usuario_id . $dado->senha );
+            $response['success'][] = $criptografia;
+            //$response['link'][] = "index.php";
         } elseif ($tipo == "revenda") {
             revendedorBO::getLoginRevenda($dataPost);
             $response['success'][] = "aguarde...";
-            $response['link'][] = "index.php";
+            //$response['link'][] = "index.php";
         } else {
             $response['error'][] = "a fazer !!!";
         }
@@ -105,15 +103,7 @@ if (FUNCOES::isAjax()) {
                                     <input name="email" required="required" placeholder="email" maxlength="255" type="email" id="UserUsername"> 
                                 </div>
                             </div>
-                            <div class="control-group">
-                                <div class="input-prepend">
-                                    <span class="add-on"><i class="icon-lock"></i></span>
-                                    <input name="senha" required="required" placeholder="senha" type="password" id="UserPassword"> 
-                                </div>
-
-                            </div>
-
-                            <div class="control-group" style="margin-left:-1.5em;">
+                             <div class="control-group" style="margin-left:-1.5em;">
                                 <div class="input-prepend">
                                     <label class="checkbox inline">
                                         <input type="radio" name="tipo" id="inlineCheckbox1" value="admin" checked=""><span style="margin-left: 1px" class="label">Admin</span>
@@ -126,13 +116,13 @@ if (FUNCOES::isAjax()) {
                                     </label>
                                 </div>
                             </div>
-
                             <div class="control-group" >
-                                <input class="btn btn-success btn-large btn-block" type="submit" value="Entrar">
+                                <input class="btn btn-success btn-large btn-block" type="submit" value="Enviar">
                                 <div class="control-group" style="">
-                                    <p><a class="btn btn-lg btn-link btn-block"  href="recuperar_email.php">Recuperar senha</a></p>
+                                    <p><a class="btn btn-lg btn-link btn-block"  href="login.php">Voltar</a></p>
                                 </div>
                             </div>
+
                         </form>
                     </div><!--/.login-->
                 </div><!--/.span12-->

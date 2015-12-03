@@ -52,6 +52,9 @@ $filterPOST = array(
     'email' => array(
         'filter' => FILTER_VALIDATE_EMAIL,
     ),
+    'titulo' => array(
+        'filter' => FILTER_SANITIZE_STRING,
+    ),
     'senha' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
         'options' => array("regexp" => "/^[\w\W]{5,255}$/")
@@ -367,15 +370,19 @@ if (FUNCOES::isAjax()) {
                                 <input type="hidden" name="page" value="<?php echo $dataGet['page']; ?>">
                             </div>
                             <div class="row">
-                                <div class="form-group col-sm-6">
+                                <div class="form-group col-sm-5">
                                     <label for="razao_social">Email</label>
                                     <input type="text" class="form-control" name="email" placeholder="" value="<?php echo $data['email']; ?>" >
                                 </div>
-                                <div class="form-group col-sm-3">
+                                 <div class="form-group col-sm-3">
+                                    <label for="cnpj">Título (p/ visual. do usuário)</label>
+                                    <input type="text" class="form-control" name="titulo" placeholder="" value="<?php echo $data['titulo']; ?>" >
+                                </div>
+                                <div class="form-group col-sm-2">
                                     <label for="cnpj">Senha</label>
                                     <input type="password" class="form-control" name="senha" placeholder="" value="" >
                                 </div>
-                                <div class="form-group col-sm-3">
+                                <div class="form-group col-sm-2">
                                     <label for="data_fundacao">Repetir senha</label>
                                     <input type="password" class="form-control" name="repetir" placeholder="" value="" >
                                 </div>

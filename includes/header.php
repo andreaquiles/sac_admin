@@ -29,21 +29,13 @@
                         </li>
                     </ul>   
                 </li>
-                <li class="dropdown">
+<!--                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Relatórios <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-
-                        <?php if (isset($_SESSION['admin_id']) || isset($_SESSION['revenda_id'])) { ?>
-<!--                            <li><a href="a_receber.php"><?= RELATORIO_A_RECEBER ?></a></li>
-                            <li><a href="vencidos.php"><?= RELATORIO_A_VENCIDOS ?></a></li>-->
-                        <?php } ?>
-                            <li><a href="usuario_atrazo.php?page=<?= $dataGet['page'] ?>"><?= CLIENTES_COM_ATRASO ?></a></li>
-                     </ul>
-<!--                    <li><a href="index.php?action=a_receber&page=<?= $dataGet['page'] ?>" target="_blank"><?= RELATORIO_A_RECEBER ?></a></li>
-                        <li><a href="index.php?action=vencidos&page=<?= $dataGet['page'] ?>" target="_blank"><?= RELATORIO_A_VENCIDOS ?></a></li>-->
+                        <li><a href="usuario_atrazo.php?page=<?= $dataGet['page'] ?>"><?= USUARIOS_COM_ATRASO ?></a></li>
+                        <li><a href="usuario_atrazo.php?page=<?= $dataGet['page'] ?>"><?= USUARIOS_BLOQUEADOS ?></a></li>
                     </ul>
-
-                </li>
+                </li>  -->
             </ul>
             <?php ?>
             <ul class="nav pull-right">
