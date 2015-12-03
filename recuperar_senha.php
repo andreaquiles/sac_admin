@@ -4,41 +4,37 @@ include_once "../sealed/BO/usuarioBO.php";
 include_once "../sealed/BO/revendedorBO.php";
 include_once "../lib/utils/funcoes.php";
 
-$filter = array(
-    'email' => array(
-        'filter' => FILTER_VALIDATE_REGEXP,
-        'options' => array("regexp" => "/^[\w\W]{1,255}$/")
+$filterGET = array(
+    'nid' => array(
+        'filter' => FILTER_VALIDATE_INT
     ),
-    'tipo' => array(
+    'nivel' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'token' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    )
+);
+
+$filter = array(
+    'senha' => array(
+        'filter' => FILTER_VALIDATE_REGEXP,
+        'options' => array("regexp" => "/^[\w\W]{1,30}$/")
+    ),
+    'repetir_senha' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
         'options' => array("regexp" => "/^[\w\W]{1,30}$/")
     )
 );
 $dataPost = filter_input_array(INPUT_POST, $filter);
+$dataGet = filter_input_array(INPUT_GET, $filterGET);
+
 if ($dataPost) {
     $tipo = $dataPost['tipo'];
     unset($dataPost['tipo']);
     try {
-        $mensagem = "Atenção, você acabou de solicitar a recuperação de senha do Sistema SACWEB"
-                . ", por favor atualize!!!<br><br>";
-        if ($tipo == "admin") {
-            $dado = usuarioBO::getAdminEmail($dataPost);
-            //$response['success'][] = "aguarde...";
-            $token = FUNCOES::cryptografar($dado->usuario_id . $dado->senha);
-            $dynamicLink = FUNCOES::dynamicLinkRecuperarSenha($dado->usuario_id, "admin", $token);
-            $mensagem.= "Clique no link ao lado <a href=\"$dynamicLink\">Entrar</a>";
-           // $response['success'][] = 'Email enviado com sucesso!!';
-           // $response = FUNCOES::email($dado->email, utf8_decode('Recuperação de senha'), 'HTML', $mensagem);
-        } elseif ($tipo == "revenda"){
-            $dado = revendedorBO::checkEmail($dataPost['email']);
-            $token = FUNCOES::cryptografar($dado->revenda_id . $dado->senha);
-            $dynamicLink = FUNCOES::dynamicLinkRecuperarSenha($dado->revenda_id, "admin", $token);
-            $mensagem.= "Clique no link ao lado <a href=\"$dynamicLink\">Entrar</a>";
-           // $response['success'][] = 'Email enviado com sucesso!!';
-           // $response = FUNCOES::email($dado->email, utf8_decode('Recuperação de senha'), 'HTML', $mensagem);
-        } else {
-            $response['error'][] = "a fazer !!!";
-        }
+        
+         
     } catch (Exception $e) {
         $response['error'][] = $e->getMessage();
     }

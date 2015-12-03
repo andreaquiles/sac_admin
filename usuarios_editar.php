@@ -250,6 +250,9 @@ try {
             if ($data['revenda_id'] == '' || empty($data['revenda_id'])) {
                 $data['revenda_id'] = NULL;
             }
+            if (isset($_SESSION['revenda_id'])) {
+               unset($datauser['bloqueado']);
+            }
             $data_financeiro['data_vencimento'] = FUNCOES::formatarDatatoMYSQL($data_financeiro['data_vencimento']);
             unset($data['page']);
             if ($data['tpPessoa'] == 'F') {
@@ -735,6 +738,7 @@ if (FUNCOES::isAjax()) {
                         </div>
 
                         <div class="text-right">
+                           <?php if (isset($_SESSION['admin_id'])) { ?>
                             <div class="form-group" style="margin-top:1.2em;">
                                 <div class="checkbox pull-left">
                                     <label>
@@ -742,6 +746,7 @@ if (FUNCOES::isAjax()) {
                                     </label>
                                 </div>
                             </div>
+                           <?php } ?>
                             <a href="<?php echo ''; ?>" class="btn btn-danger">Cancelar</a>
                             <button type="submit" class="btn btn-success">Salvar</button>
                         </div>
