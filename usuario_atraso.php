@@ -231,7 +231,7 @@ if (FUNCOES::isAjax()) {
         </div>
         <script src="assets/js/gerenciador.min.js"></script>
         <script>
-            $('select').on('change', function () {
+             $('select[name=planos_assinatura_id]').change(function(){ 
                 location.href = this.value + '.php';
             });
         </script>

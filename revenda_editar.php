@@ -171,7 +171,7 @@ try {
         } else if ($data['email'] == NULL) {
             $response['error'][] = 'E-mail Inválido!';
         } else if ($data['senha'] == NULL) {
-            $response['error'][] = 'Preencher senha corretamanete (mínimo 5 caracteres)';
+            $response['error'][] = 'Preencher senha corretamente (mínimo 5 caracteres)';
         } else if ($data['tpPessoa'] == NULL) {
             $response['error'][] = 'Pessoa Tipo Inválido!';
         } else if (!empty($data_org['cpf']) && $data['cpf'] == NULL) {

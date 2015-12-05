@@ -115,43 +115,43 @@ if (FUNCOES::isAjax()) {
                 position: relative;
                 width: 100%;
             }
-                </style>
-            </head>
-            <body>
-                  <?php include 'includes/header_admin.php'; ?>
-                        <div class="container-fluid">
-                            <div id="alerta">
-                   <?php
+        </style>
+    </head>
+    <body>
+        <?php include 'includes/header_admin.php'; ?>
+        <div class="container-fluid">
+            <div id="alerta">
+                <?php
                 if (isset($response)) {
                     if (!empty($response['error'])) {
                         ?>
-                <div class="alert alert-danger fade in" role="alert">
-                <?php echo implode('<br>', $response['error']); ?>
-                </div>
-                    <?php
+                        <div class="alert alert-danger fade in" role="alert">
+                            <?php echo implode('<br>', $response['error']); ?>
+                        </div>
+                        <?php
+                    }
+                    if (!empty($response['success'])) {
+                        ?>
+                        <div class="alert alert-success fade in" role="alert">
+                            <?php echo implode('<br>', $response['success']); ?>
+                        </div>
+                        <?php
+                    }
                 }
-                if (!empty($response['success'])) {
-                    ?>
-                <div class="alert alert-success fade in" role="alert">
-                <?php echo implode('<br>', $response['success']); ?>
-                </div>
-                    <?php
-                }
-            }
-            ?>
+                ?>
             </div>
             <div id="paginador_info_clientes">
-             <?php echo $paginador->getInfo(); ?>
+                <?php echo $paginador->getInfo(); ?>
             </div>
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
                 <li class="active">Usuários</li>
-                
+
             </ol>
             <ol class="breadcrumb" >
-                    <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
-                        <b>Novo Usuário</b>
-                    </a>
+                <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
+                    <b>Novo Usuário</b>
+                </a>
                 <a class="btn btn-danger" data-toggle="tooltip" title="PDF" 
                    href="index.php?action=usuarios_bloqueados" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
@@ -174,14 +174,15 @@ if (FUNCOES::isAjax()) {
                         </tr>
                     </thead>
                     <tbody>
-                                <?php
-                                $cont = 1;
-                                if ($dadosusers) {
-                                    foreach ($dadosusers as $dado) {?>
-                                <tr <?php echo $dado->bloqueado ? 'class="danger"' : ''   ?> >
+                        <?php
+                        $cont = 1;
+                        if ($dadosusers) {
+                            foreach ($dadosusers as $dado) {
+                                ?>
+                                <tr <?php echo $dado->bloqueado ? 'class="danger"' : '' ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
-                                        <?= $cont; ?>
+        <?= $cont; ?>
                                     </td>
                                     <td style="width:150px;"><?= $dado->login; ?></td>
                                     <td style="width:100px;"><span class="label label-default"><?= $dado->phone; ?></span></td>
@@ -205,11 +206,11 @@ if (FUNCOES::isAjax()) {
                                         </a>
                                     </td>
                                 </tr>
-                                    <?php
-                                    $cont++;
-                                }
+                                <?php
+                                $cont++;
                             }
-                            ?>
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -226,9 +227,9 @@ if (FUNCOES::isAjax()) {
         </div>
         <script src="assets/js/gerenciador.min.js"></script>
         <script>
-         $('select').on('change', function () {
-            location.href = this.value+'.php';
-         });
+            $('select[name=planos_assinatura_id]').change(function () {
+                location.href = this.value + '.php';
+            });
         </script>
     </body>
 </html>

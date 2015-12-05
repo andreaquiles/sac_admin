@@ -119,7 +119,6 @@ if (FUNCOES::isAjax()) {
     </head>
     <body>
         <?php include 'includes/header_admin.php'; ?>
-
         <div class="container-fluid">
             <div id="alerta">
                 <?php
@@ -157,7 +156,25 @@ if (FUNCOES::isAjax()) {
                    href="index.php?action=usuarios" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
-                 <div class="form-group col-sm-2 pull-right">
+                <div class="form-group pull-right">
+                    <form class="form-inline pull-right" role="form" >
+                        <div class="form-group">
+                            <select class="form-control" name="busca">
+                                <option value="nome" selected="">Nome</option>
+                                <option value="phone">Whatsapp</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            
+                            <input type="text" class="form-control" name="nome"  placeholder="Nome">
+                            <input type="text" class="form-control" name="phone"  placeholder="whatsapp">
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>  Pesquisar
+                        </button>
+                    </form>
+                </div>
+                <div class="form-group col-sm-2 pull-right" style="">
                     <select class="form-control" name="planos_assinatura_id">
                         <option value="usuario" selected="">Todos</option>
                         <option value="usuario_atraso">Usuários com atraso</option>
@@ -228,9 +245,22 @@ if (FUNCOES::isAjax()) {
         </div>
         <script src="assets/js/gerenciador.min.js"></script>
         <script>
-         $('select').on('change', function () {
-            location.href = this.value+'.php';
-         });
+            $('select[name=planos_assinatura_id]').change(function () {
+                location.href = this.value + '.php';
+            });
+            $('input[name=phone]').hide();
+            $('select[name=busca]').change(function (){
+                if (this.value === 'phone') {
+                    $('input[name=nome]').hide();
+                    $('input[name=nome]').val("");
+                    $('input[name=phone]').show();
+                } else {
+                    $('input[name=nome]').show();
+                    $('input[name=phone]').hide();
+                    $('input[name=phone]').val("");
+                }
+
+            });
         </script>
     </body>
 </html>

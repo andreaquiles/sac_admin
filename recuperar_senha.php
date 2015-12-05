@@ -1,5 +1,6 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
+include_once '../sealed/init.php';
 include_once "../sealed/BO/usuarioBO.php";
 include_once "../sealed/BO/revendedorBO.php";
 include_once "../lib/utils/funcoes.php";
@@ -19,26 +20,62 @@ $filterGET = array(
 $filter = array(
     'senha' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
-        'options' => array("regexp" => "/^[\w\W]{1,30}$/")
+        'options' => array("regexp" => "/^[\w\W]{5,30}$/")
     ),
-    'repetir_senha' => array(
-        'filter' => FILTER_VALIDATE_REGEXP,
-        'options' => array("regexp" => "/^[\w\W]{1,30}$/")
+    'nid' => array(
+        'filter' => FILTER_VALIDATE_INT
+    ),
+    'nivel' => array(
+        'filter' => FILTER_SANITIZE_STRING
     )
 );
 $dataPost = filter_input_array(INPUT_POST, $filter);
 $dataGet = filter_input_array(INPUT_GET, $filterGET);
 
-if ($dataPost) {
-    $tipo = $dataPost['tipo'];
-    unset($dataPost['tipo']);
-    try {
-        
-         
-    } catch (Exception $e) {
-        $response['error'][] = $e->getMessage();
+try {
+    if ($dataPost) {
+        if ($dataPost['senha'] == NULL) {
+            $response['error'][] = 'Preencher senha corretamente (mínimo 5 caracteres)';
+        } else {
+            if ($dataPost['nivel'] == 'admin') {
+                $data['senha'] = FUNCOES::cryptografar($dataPost['senha']);
+                usuarioBO::salvarUsuario($data, 'usuarios', $dataPost['nid']);
+                $response['success'][] = 'Senha alterada com sucesso !!!';
+            }elseif ($dataPost['nivel'] == 'revenda') {
+                $data['senha'] = FUNCOES::cryptografar($dataPost['senha']);
+                revendedorBO::salvar($data, 'revenda', $dataPost['nid']);
+                $response['success'][] = 'Senha alterada com sucesso !!!';
+            }elseif ($dataPost['nivel'] == 'usuario') {
+                 $data['passwlogin'] = $dataPost['senha'];
+                 usuarioBO::salvarUsuario($data, 'users', $dataPost['nid']);
+                 $response['success'][] = 'Senha alterada com sucesso !!!';
+            }
+        }
+    } elseif ($dataGet['nivel'] == "admin") {
+        $dado = usuarioBO::getUsuarios($dataGet['nid']);
+        $token = FUNCOES::cryptografar($dataGet['nid'] . $dado->senha);
+        if ($token !== $dataGet['token']) {
+            throw new Exception('Parâmetros incorretos !!!');
+        }
+    }elseif ($dataGet['nivel'] == "revenda") {
+        $dado = revendedorBO::getRevendedor($dataGet['nid']);
+        $token = FUNCOES::cryptografar($dataGet['nid'] . $dado['senha']);
+        if ($token !== $dataGet['token']) {
+            throw new Exception('Parâmetros incorretos !!!');
+        }
+    }elseif ($dataGet['nivel'] == "usuario") {
+        $dado = usuarioBO::getUsuario($dataGet['nid']);
+        $token = FUNCOES::cryptografar($dataGet['nid'] . $dado->passwlogin);
+        if ($token !== $dataGet['token']) {
+            throw new Exception('Parâmetros incorretos !!!');
+        }
+    } else {
+        throw new Exception('Parâmetros incorretos !!!');
     }
+} catch (Exception $e) {
+    $response['error'][] = $e->getMessage();
 }
+//}
 if (FUNCOES::isAjax()) {
     print json_encode($response);
     exit();
@@ -83,13 +120,16 @@ if (FUNCOES::isAjax()) {
             <div class="row-fluid">
                 <div class="span12">
                     <div class="login well well-small">
-                        <div id="alerta">
+                        <div id="alerta" style="text-align: center">
                             <?php
                             if (isset($response['error'])) {
                                 if (!empty($response['error'])) {
                                     ?>
                                     <div class="alert alert-danger fade in" role="alert">
-                                        <?php echo implode('<br>', $response['error']); ?>
+                                        <?php
+                                        echo implode('<br>', $response['error']);
+                                        exit();
+                                        ?>
                                     </div>
                                     <?php
                                 }
@@ -103,27 +143,17 @@ if (FUNCOES::isAjax()) {
                             <div class="control-group">
                                 <div class="input-prepend">
                                     <span class="add-on"><i class="icon-user"></i></span>
-                                    <input name="email" required="required" placeholder="email" maxlength="255" type="email" id="UserUsername"> 
+                                    <input name="nivel"  type="hidden" value="<?= $dataGet['nivel'] ?>">
+                                    <input name="nid"  type="hidden" value="<?= $dataGet['nid'] ?>">
+                                    <input name="senha" required="required" placeholder="senha" maxlength="20" type="password" id=""> 
                                 </div>
-                            </div>
-                            <div class="control-group" style="margin-left:-1.5em;">
-                                <div class="input-prepend">
-                                    <label class="checkbox inline">
-                                        <input type="radio" name="tipo" id="inlineCheckbox1" value="admin" checked=""><span style="margin-left: 1px" class="label">Admin</span>
-                                    </label>
-                                    <label class="checkbox inline">
-                                        <input type="radio" name="tipo"  id="inlineCheckbox2" value="revenda"><span style="margin-left: 1px" class="label">Revenda</span>
-                                    </label>
-                                    <label class="checkbox inline">
-                                        <input type="radio" name="tipo"  id="inlineCheckbox3" value="usuario"><span style="margin-left: 1px" class="label">Usuário</span>
-                                    </label>
-                                </div>
+                                <!--                                <div class="input-prepend">
+                                                                    <span class="add-on"><i class="icon-user"></i></span>
+                                                                    <input name="repetir_senha" required="required" placeholder="repetir senha" maxlength="20" type="password" id=""> 
+                                                                </div>-->
                             </div>
                             <div class="control-group" >
                                 <input class="btn btn-success btn-large btn-block" type="submit" value="Enviar">
-                                <div class="control-group" style="">
-                                    <p><a class="btn btn-lg btn-link btn-block"  href="login.php">Voltar</a></p>
-                                </div>
                             </div>
 
                         </form>
