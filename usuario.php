@@ -70,12 +70,12 @@ try {
     if (empty($dataGet['busca'])) {
         $count = usuarioBO::getListaCount();
         $paginador = new paginador($dataGet['page'], $count, 20, '', "");
-        $dadosusers = usuarioBO::getListaUsuarios($paginador->getPage());
+        $dadosusuarios = usuarioBO::getListaUsuarios($paginador->getPage());
     } else {
         $input = array('busca' => $dataGet['busca'], 'nome' => $dataGet['nome'], 'phone' => $dataGet['phone']);
         $count = usuarioBO::getListaCountPesquisa($input);
         $paginador = new paginador($dataGet['page'], $count, 20, '', $input);
-        $dadosusers = usuarioBO::getListaUsuariosPesquisa($input, $paginador->getPage());
+        $dadosusuarios = usuarioBO::getListaUsuariosPesquisa($input, $paginador->getPage());
     }
     /**
      * action via post EXCLUIR
@@ -162,12 +162,9 @@ if (FUNCOES::isAjax()) {
                 <?php echo $paginador->getInfo(); ?>
             </div>
 
-
-
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
                 <li class="active">Usuários</li>
-
             </ol>
 
 
@@ -176,7 +173,7 @@ if (FUNCOES::isAjax()) {
                     <b>Novo Usuário</b>
                 </a>
                 <a class="btn btn-danger" data-toggle="tooltip" title="PDF" 
-                   href="index.php?action=usuarios" target="_blank">
+                   href="index.php?action=usuarios&<?= http_build_query($dataGet)?>" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
                 <div class="form-group pull-right">
@@ -216,15 +213,15 @@ if (FUNCOES::isAjax()) {
                     <tbody>
                         <?php
                         $cont = 1;
-                        if ($dadosusers) {
-                            foreach ($dadosusers as $dado) {
+                        if ($dadosusuarios) {
+                            foreach ($dadosusuarios as $dado) {
                                 if ($dado->nome) {
                                     $descricao = $dado->nome;
                                 } elseif ($dado->login) {
                                     $descricao = $dado->login;
                                 }
                                 ?>
-                                <tr <?php echo $dado->bloqueado ? 'class="danger"' : '' ?> >
+                                <tr <?php echo $dado->bloqueado ? 'class=""' : '' ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>

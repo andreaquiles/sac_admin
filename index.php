@@ -29,6 +29,15 @@ $filterGET = array(
     ),
     'action' => array(
         'filter' => FILTER_SANITIZE_STRING
+    ),
+    'busca' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'nome' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'phone' => array(
+        'filter' => FILTER_SANITIZE_STRING
     )
 );
 
@@ -45,34 +54,38 @@ try {
         require_once ( '../lib/fpdf/fpdf.php');
         require_once('../sealed/BO/financeiroBO.php');
         $relatorio = "a_receber";
-        $dadosExportarPDF = financeiroBO::getFinanceiro($relatorio, 5000);
+        $dadosExportarPDF = financeiroBO::getFinanceiro($relatorio, LIMIT_REGISTROS_RELATORIOS);
         require_once('../sealed/controler/pdf.php');
         exit();
     } elseif ($dataGet['action'] == 'vencidos') {
         require_once ( '../lib/fpdf/fpdf.php');
         require_once('../sealed/BO/financeiroBO.php');
         $relatorio = "vencidos";
-        $dadosExportarPDF = financeiroBO::getFinanceiro($relatorio,5000);
+        $dadosExportarPDF = financeiroBO::getFinanceiro($relatorio, LIMIT_REGISTROS_RELATORIOS);
         require_once('../sealed/controler/pdf.php');
         exit();
-    }elseif ($dataGet['action'] == 'usuarios') {
+    } elseif ($dataGet['action'] == 'usuarios') {
         require_once ( '../lib/fpdf/fpdf.php');
         $relatorio = "usuarios";
-        $dadosExportarPDF = usuarioBO::getListaUsuarios(5000);
+        if (empty($dataGet['busca'])) {
+            $dadosExportarPDF = usuarioBO::getListaUsuarios(LIMIT_REGISTROS_RELATORIOS);
+        }else{
+            $dadosExportarPDF = usuarioBO::getListaUsuariosPesquisa($dataGet, LIMIT_REGISTROS_RELATORIOS);
+        }
         require_once('../sealed/controler/pdf.php');
         exit();
-    }elseif ($dataGet['action'] == 'usuarios_atraso') {
+    } elseif ($dataGet['action'] == 'usuarios_atraso') {
         require_once ( '../lib/fpdf/fpdf.php');
         require_once('../sealed/BO/financeiroBO.php');
         $relatorio = "usuarios_atraso";
-        $dadosExportarPDF = financeiroBO::getFinanceiro("vencidos",5000);
+        $dadosExportarPDF = financeiroBO::getFinanceiro("vencidos", LIMIT_REGISTROS_RELATORIOS);
         require_once('../sealed/controler/pdf.php');
         exit();
-    }elseif ($dataGet['action'] == 'usuarios_bloqueados') {
+    } elseif ($dataGet['action'] == 'usuarios_bloqueados') {
         require_once ( '../lib/fpdf/fpdf.php');
         require_once('../sealed/BO/financeiroBO.php');
         $relatorio = "usuarios_bloqueados";
-        $dadosExportarPDF = usuarioBO::getListaUsuariosBloqueados(5000);
+        $dadosExportarPDF = usuarioBO::getListaUsuariosBloqueados(LIMIT_REGISTROS_RELATORIOS);
         require_once('../sealed/controler/pdf.php');
         exit();
     }

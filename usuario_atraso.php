@@ -62,7 +62,7 @@ try {
     }
 
     $paginador = new paginador($dataGet['page'], $count, 20, '', array('pesquisa' => $inputGET['pesquisa']));
-    $dados_receber = financeiroBO::getFinanceiro("vencidos", $paginador->getPage());
+    $dados_atraso = financeiroBO::getFinanceiro("vencidos", $paginador->getPage());
     /**
      * action via post EXCLUIR
      */
@@ -178,8 +178,8 @@ if (FUNCOES::isAjax()) {
                     <tbody>
                         <?php
                         $cont = 1;
-                        if ($dados_receber) {
-                            foreach ($dados_receber as $dado) {
+                        if ($dados_atraso) {
+                            foreach ($dados_atraso as $dado) {
                                 if ($dado->nome) {
                                     $descricao = $dado->nome;
                                 } elseif ($dado->login) {
