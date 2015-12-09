@@ -222,10 +222,7 @@ if (FUNCOES::isAjax()) {
                         </div>
                     </div>
                 </form>
-
             </div>
-
-
         </div>
 
         <div id="footer" class="navbar-default">

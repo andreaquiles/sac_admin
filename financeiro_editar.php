@@ -242,8 +242,7 @@ if (FUNCOES::isAjax()) {
             <div class="container">
             </div>
         </div>
-
         <script src="assets/js/gerenciador.min.js"></script>
-        <script src="assets/js/plano_assinatura_editar.min.js"></script>
+        <script src="assets/js/financeiro_editar.min.js"></script>
     </body>
 </html>

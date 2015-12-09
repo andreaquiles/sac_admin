@@ -178,13 +178,18 @@ if (FUNCOES::isAjax()) {
                         $cont = 1;
                         if ($dadosusers) {
                             foreach ($dadosusers as $dado) {
+                                if ($dado->nome) {
+                                    $descricao = $dado->nome;
+                                } elseif ($dado->login) {
+                                    $descricao = $dado->login;
+                                }
                                 ?>
                                 <tr <?php echo $dado->bloqueado ? 'class="danger"' : '' ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
-        <?= $cont; ?>
+                                     <?= $cont; ?>
                                     </td>
-                                    <td style="width:150px;"><?= $dado->login; ?></td>
+                                    <td style="width:150px;"><?= $descricao; ?></td>
                                     <td style="width:100px;"><span class="label label-default"><?= $dado->phone; ?></span></td>
                                     <td style="width:100px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 

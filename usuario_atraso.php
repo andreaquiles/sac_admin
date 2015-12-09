@@ -180,13 +180,18 @@ if (FUNCOES::isAjax()) {
                         $cont = 1;
                         if ($dados_receber) {
                             foreach ($dados_receber as $dado) {
+                                if ($dado->nome) {
+                                    $descricao = $dado->nome;
+                                } elseif ($dado->login) {
+                                    $descricao = $dado->login;
+                                }
                                 ?>
                                 <tr class="danger">
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
-                                    <td style="width:150px;"><?= $dado->login; ?></td>
+                                    <td style="width:150px;"><?= $descricao; ?></td>
                                     <td style="width:100px;"><span class="label label-default"><?= ($dado->phone); ?></span></td>
                                     <td style="width:100px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
@@ -231,7 +236,7 @@ if (FUNCOES::isAjax()) {
         </div>
         <script src="assets/js/gerenciador.min.js"></script>
         <script>
-             $('select[name=planos_assinatura_id]').change(function(){ 
+            $('select[name=planos_assinatura_id]').change(function () {
                 location.href = this.value + '.php';
             });
         </script>

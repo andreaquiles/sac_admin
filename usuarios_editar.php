@@ -394,7 +394,11 @@ try {
                     users_informacaoBO::salvar($data, 'users_informacao');
                     $response['success'][] = 'Usuário inserido com sucesso!!';
                 }
-                $pagina = $_POST['pgname'].'.php';
+                if($_POST['pgname']){
+                   $pagina = $_POST['pgname'].'.php';
+                }else{
+                    $pagina = 'usuario.php';
+                }
                 $response['link'][] = "$pagina?page=$page";
             }
         }

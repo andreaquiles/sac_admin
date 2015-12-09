@@ -31,8 +31,17 @@ $filterGET = array(
     'page' => array(
         'filter' => FILTER_VALIDATE_INT
     ),
-    'id' => array(
-        'filter' => FILTER_VALIDATE_INT
+    'busca' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'nome' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'phone' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'pgnome' => array(
+        'filter' => FILTER_SANITIZE_STRING
     )
 );
 
@@ -53,15 +62,21 @@ $argsPost = array(
 $inputPOST = filter_input_array(INPUT_POST, $argsPost);
 $dataGet = filter_input_array(INPUT_GET, $filterGET);
 
+if (!$dataGet['page']) {
+    $dataGet['page'] = 1;
+}
 
 try {
-    $count = usuarioBO::getListaCount();
-    if (!$dataGet['page']) {
-        $dataGet['page'] = 1;
+    if (empty($dataGet['busca'])) {
+        $count = usuarioBO::getListaCount();
+        $paginador = new paginador($dataGet['page'], $count, 20, '', "");
+        $dadosusers = usuarioBO::getListaUsuarios($paginador->getPage());
+    } else {
+        $input = array('busca' => $dataGet['busca'], 'nome' => $dataGet['nome'], 'phone' => $dataGet['phone']);
+        $count = usuarioBO::getListaCountPesquisa($input);
+        $paginador = new paginador($dataGet['page'], $count, 20, '', $input);
+        $dadosusers = usuarioBO::getListaUsuariosPesquisa($input, $paginador->getPage());
     }
-
-    $paginador = new paginador($dataGet['page'], $count, 20, '', array('pesquisa' => $inputGET['pesquisa']));
-    $dadosusers = usuarioBO::getListaUsuarios($paginador->getPage());
     /**
      * action via post EXCLUIR
      */
@@ -105,6 +120,8 @@ if (FUNCOES::isAjax()) {
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="assets/bootstrap/js/bootbox.min.js"></script>
+        <script src="assets/js/autocomplete.js"></script>
+        <link href="assets/css/autocomplete.css" rel="stylesheet">
 
         <style>
 
@@ -118,6 +135,7 @@ if (FUNCOES::isAjax()) {
         </style>
     </head>
     <body>
+
         <?php include 'includes/header_admin.php'; ?>
         <div class="container-fluid">
             <div id="alerta">
@@ -143,11 +161,16 @@ if (FUNCOES::isAjax()) {
             <div id="paginador_info_clientes">
                 <?php echo $paginador->getInfo(); ?>
             </div>
+
+
+
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
                 <li class="active">Usuários</li>
 
             </ol>
+
+
             <ol class="breadcrumb" >
                 <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
                     <b>Novo Usuário</b>
@@ -157,17 +180,16 @@ if (FUNCOES::isAjax()) {
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
                 <div class="form-group pull-right">
-                    <form class="form-inline pull-right" role="form" >
+                    <form class="form-inline pull-right noAjax" method="get">
                         <div class="form-group">
                             <select class="form-control" name="busca">
-                                <option value="nome" selected="">Nome</option>
-                                <option value="phone">Whatsapp</option>
+                                <option value="nome"  <?php if ($dataGet['busca'] == "nome") echo "selected"; ?> >Nome</option>
+                                <option value="phone" <?php if ($dataGet['busca'] == "phone") echo "selected"; ?> >Whatsapp</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            
-                            <input type="text" class="form-control" name="nome"  placeholder="Nome">
-                            <input type="text" class="form-control" name="phone"  placeholder="whatsapp">
+                            <input type="text" class="form-control" name="nome"  placeholder="Nome" value="<?= $dataGet['nome'] ?>">
+                            <input type="text" class="form-control" name="phone"  placeholder="whatsapp" value="<?= $dataGet['phone'] ?>">
                         </div>
                         <button type="submit" class="btn btn-success">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>  Pesquisar
@@ -196,13 +218,18 @@ if (FUNCOES::isAjax()) {
                         $cont = 1;
                         if ($dadosusers) {
                             foreach ($dadosusers as $dado) {
+                                if ($dado->nome) {
+                                    $descricao = $dado->nome;
+                                } elseif ($dado->login) {
+                                    $descricao = $dado->login;
+                                }
                                 ?>
                                 <tr <?php echo $dado->bloqueado ? 'class="danger"' : '' ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
-                                    <td style="width:150px;"><?= $dado->login; ?></td>
+                                    <td style="width:150px;"><?= $descricao; ?></td>
                                     <td style="width:100px;"><span class="label label-default"><?= $dado->phone; ?></span></td>
                                     <td style="width:100px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
@@ -249,7 +276,7 @@ if (FUNCOES::isAjax()) {
                 location.href = this.value + '.php';
             });
             $('input[name=phone]').hide();
-            $('select[name=busca]').change(function (){
+            $('select[name=busca]').change(function () {
                 if (this.value === 'phone') {
                     $('input[name=nome]').hide();
                     $('input[name=nome]').val("");
@@ -259,8 +286,14 @@ if (FUNCOES::isAjax()) {
                     $('input[name=phone]').hide();
                     $('input[name=phone]').val("");
                 }
-
             });
         </script>
+        <?php if ($dataGet['phone']) { ?>
+            <script>
+                $('input[name=phone]').show();
+                $('input[name=nome]').hide();
+            </script>
+        <?php } ?>
+        <script src="assets/js/usuario.js"></script>
     </body>
 </html>
