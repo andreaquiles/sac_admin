@@ -36,7 +36,9 @@ switch ($action) {
                          $value = $campo->nome;
                      }
                     ?>
-                    <li onselect="this.setText('<?php echo $nome; ?>', '<?php echo $value; ?>').setValue('<?php echo $value; ?>', '')"><?php echo str_ireplace($request, '<strong>' . $request . '</strong>', $nome); ?></li>
+                    <li onselect="this.setText('<?php echo $nome; ?>', '<?php echo $value; ?>').setValue('<?php echo $value; ?>', '')">
+                        <?php echo str_ireplace($request, '<strong>' . $request . '</strong>', $nome); ?>
+                    </li>
                     <?php
                 }
 
