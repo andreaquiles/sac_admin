@@ -68,8 +68,9 @@ if (!$dataGet['page']) {
 
 try {
     if (empty($dataGet['busca'])) {
+        $input = array('busca' => $dataGet['busca'], 'nome' => $dataGet['nome'], 'phone' => $dataGet['phone']);
         $count = usuarioBO::getListaCount();
-        $paginador = new paginador($dataGet['page'], $count, 20, '', "");
+        $paginador = new paginador($dataGet['page'], $count, 20, '', $input);
         $dadosusuarios = usuarioBO::getListaUsuarios($paginador->getPage());
     } else {
         $input = array('busca' => $dataGet['busca'], 'nome' => $dataGet['nome'], 'phone' => $dataGet['phone']);

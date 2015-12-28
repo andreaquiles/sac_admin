@@ -176,7 +176,7 @@ if (FUNCOES::isAjax()) {
                             <th>#</th>
                             <th>Usúario</th>
                              <th>Vencimento</th>
-                            <th>Valor R$</th>
+                            <th>Valor</th>
                            
                         </tr>
                     </thead>
@@ -185,13 +185,18 @@ if (FUNCOES::isAjax()) {
                         $cont = 1;
                         if ($dados_receber) {
                             foreach ($dados_receber as $dado) {
+                                if ($dado->nome) {
+                                    $descricao = $dado->nome;
+                                } else {
+                                    $descricao = $dado->login;
+                                }
                                 ?>
                                 <tr <?php //echo $dado['data_encerramento'] ? 'class="danger"' : ''     ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
-                                    <td style="width:250px;"><?= $dado->login; ?></td>
+                                    <td style="width:250px;"><?= $descricao; ?></td>
                                     <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatarDatatoHTML($dado->data_vencimento); ?></span></td>
                                     <td style="width:80px;"><span class="label label-default"><?= FUNCOES::formatoDecimalHTML($dado->valor); ?></span></td>
                                     <td style="width:65px;" class="text-right">

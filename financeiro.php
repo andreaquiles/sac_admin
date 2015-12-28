@@ -167,7 +167,7 @@ if (FUNCOES::isAjax()) {
                             <th>#</th>
                             <th>Usuário</th>
                             <th>Vencimento</th>
-                            <th>Valor R$</th>
+                            <th>Valor</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -176,10 +176,10 @@ if (FUNCOES::isAjax()) {
                         $cont = 1;
                         if ($dados) {
                             foreach ($dados as $dado) {
-                                if ($dado->login) {
-                                    $descricao = $dado->login;
-                                } else {
+                                if ($dado->nome) {
                                     $descricao = $dado->nome;
+                                } else {
+                                    $descricao = $dado->login;
                                 }
                                 ?>
                                 <tr  <?php echo (strtotime(date("Y-m-d")) > strtotime($dado->data_vencimento)) ? 'class="danger"' : '' ?> >

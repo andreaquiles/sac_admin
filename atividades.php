@@ -57,7 +57,6 @@ if (isset($inputPOST['action'])) {
             try {
                 mensagensBO::deletarMessages($inputPOST['ids']);
                 $response['success'][] = 'Registros excluídos com sucesso!';
-                //$response['link'] =      'usuarios.php?page=' . $inputPOST['page'];
             } catch (Exception $err) {
                 $response['error'][] = $err->getMessage();
             }

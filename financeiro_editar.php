@@ -212,7 +212,7 @@ if (FUNCOES::isAjax()) {
                             <input type="hidden" name="pgname" value="<?php echo $dataGet['pgname']; ?>">
                             <div class="row">
                                 <div class="form-group col-sm-3">
-                                    <label for="cnpj">Valor R$</label>
+                                    <label for="cnpj">Valor</label>
                                     <input type="text" class="form-control" name="valor" data-toggle="maskMoney"  value="<?php echo $data['valor']; ?>" >
                                 </div>
                                 <div class="form-group col-sm-3">

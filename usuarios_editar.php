@@ -5,10 +5,12 @@ require_once('../sealed/BO/users_informacaoBO.php');
 require_once('../sealed/BO/revendedorBO.php');
 require_once('../sealed/BO/plano_assinaturaBO.php');
 require_once('../sealed/BO/financeiroBO.php');
+require_once('../sealed/BO/moedasBO.php');
 include_once "../lib/utils/funcoes.php";
 /**
  * autenticações 
  */
+
 if (isset($_SESSION['admin_id'])) {
     require_once('../sealed/BO/usuarioBO.php');
     usuarioBO::checkExpireLogin();
@@ -83,6 +85,9 @@ $filterPostUserInfo = array(
     ),
     'planos_assinatura_id' => array(
         'filter' => FILTER_VALIDATE_INT
+    ),
+     'moeda' => array(
+        'filter' => FILTER_SANITIZE_STRING
     ),
     'page' => array(
         'filter' => FILTER_VALIDATE_INT
@@ -197,6 +202,7 @@ $dataGet = filter_input_array(INPUT_GET, $filterGET);
 try {
     $revendas = revendedorBO::getRevendas(1000);
     $planos = plano_assinaturaBO::getListaCombo();
+    $moedas = moedasBO::getListaCombo();
     if ($data) {
         $response = array();
         if (empty($data['nome'])) {
@@ -249,6 +255,9 @@ try {
              */
             if ($data['revenda_id'] == '' || empty($data['revenda_id'])) {
                 $data['revenda_id'] = NULL;
+            }
+            if ($data['moeda'] == '' || empty($data['moeda'])) {
+                $data['moeda'] = NULL;
             }
             if (isset($_SESSION['revenda_id'])) {
                unset($datauser['bloqueado']);
@@ -365,6 +374,7 @@ try {
                     $data['endereco'] = $endereco;
                     unset($data['id']);
                     unset($datauser['id']);
+                    
                     $id = usuarioBO::salvarUsuario($datauser, 'users');
                     $data['users_id'] = $id;
                     require_once('../sealed/BO/tmpBO.php');
@@ -390,7 +400,6 @@ try {
                     } else {
                         $data['planos_assinatura_id'] = NULL;
                     }
-
                     users_informacaoBO::salvar($data, 'users_informacao');
                     $response['success'][] = 'Usuário inserido com sucesso!!';
                 }
@@ -559,6 +568,22 @@ if (FUNCOES::isAjax()) {
                                     </select>
                                 </div>
                                 <div class="form-group col-sm-2">
+                                    <label for="data_fundacao">Moeda</label>
+                                    <select class="form-control" name="moeda">
+                                        <option value="" selected="">selecione</option>
+                                        <?php
+                                    
+                                        if (is_array($moedas)) {
+                                            foreach ($moedas as $moeda) {
+                                                ?>
+                                                <option value="<?= $moeda->simbolo ?>" <?php echo $data['moeda'] == $moeda->simbolo ? ' selected' : ''; ?>><?= $moeda->descricao.' ( '.$moeda->simbolo.' )' ?></option>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-2">
                                     <label for="data_vencimento">Vencimento</label>
                                     <input type="text" data-toggle="datepicker" class="form-control" name="data_vencimento" value="<?= $data['data_vencimento'] ?>" >
                                 </div>
@@ -705,7 +730,6 @@ if (FUNCOES::isAjax()) {
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>
