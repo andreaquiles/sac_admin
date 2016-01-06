@@ -156,7 +156,7 @@ $('.excluir').click(function (e) {
     var btn = $(this);
     var page = $("table input[name=page]").val();
     if (confirm('Deseja remover o(s) item(s) selecionado(s)?')) {
-
+        
         btn.attr('data-loading-text', 'Aguarde...').button('loading');
         var ids = $("table input[name=selecao]:checkbox:checked").map(function () {
             return $(this).val();
@@ -164,6 +164,9 @@ $('.excluir').click(function (e) {
 
         $.post(location.href, {action: 'excluir', ids: ids, page: page}, function (data) {
             messagesModal(data);
+            $("table input[name=selecao]:checkbox:checked").parent().parent().fadeOut(function () {
+                $(this).remove();
+            });
         }, 'json').always(function () {
             btn.button('reset');
         }).fail(function () {

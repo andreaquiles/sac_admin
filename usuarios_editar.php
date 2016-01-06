@@ -10,7 +10,6 @@ include_once "../lib/utils/funcoes.php";
 /**
  * autenticações 
  */
-
 if (isset($_SESSION['admin_id'])) {
     require_once('../sealed/BO/usuarioBO.php');
     usuarioBO::checkExpireLogin();
@@ -86,7 +85,7 @@ $filterPostUserInfo = array(
     'planos_assinatura_id' => array(
         'filter' => FILTER_VALIDATE_INT
     ),
-     'moeda' => array(
+    'moeda' => array(
         'filter' => FILTER_SANITIZE_STRING
     ),
     'page' => array(
@@ -223,9 +222,9 @@ try {
 //        else if ($data['data_vencimento'] == NULL) {
 //            $response['error'][] = 'Data de Vencimento Inválido!';
 //        }
-//        else if ($datauser['phone'] == NULL) {
-//            $response['error'][] = 'Preencher whatsapp';
-//        }
+        else if ($datauser['phone'] == NULL) {
+            $response['error'][] = 'Preencher whatsapp';
+        }
         else if ($data['tpPessoa'] == NULL) {
             $response['error'][] = 'Pessoa Tipo Inválido!';
         } else if (!empty($data_org['cpf']) && $data['cpf'] == NULL) {
@@ -260,10 +259,13 @@ try {
                 $data['moeda'] = NULL;
             }
             if (isset($_SESSION['revenda_id'])) {
-               unset($datauser['bloqueado']);
+                unset($datauser['bloqueado']);
             }
             $data_financeiro['data_vencimento'] = FUNCOES::formatarDatatoMYSQL($data_financeiro['data_vencimento']);
             unset($data['page']);
+            $checkphone = usuarioBO::checkphone($datauser['phone']);
+
+
             if ($data['tpPessoa'] == 'F') {
                 /**
                  * ((((((((((((((((((PESSOA FISICA)))))))))))))))
@@ -274,19 +276,30 @@ try {
                 unset($data['inscricao_municipal']);
                 unset($data['data_fundacao']);
                 /**
-                 * verificações cpf e email existente
+                 * verificações: cpf , email e phone existente
                  */
                 $especifico = users_informacaoBO::getCpfCnpj($data['cpf']);
+
                 if (empty($datauser['id']) && !empty($especifico['cpf'])) {
                     /**
-                     * INSERT fornecedor
+                     * INSERT USUÁRIO F
                      */
                     $response['error'][] = 'CPF do Usuário já cadastrado !!!';
+                } elseif (empty($datauser['id']) && !empty($checkphone)) {
+                    /**
+                     * INSERT USUÁRIO F
+                     */
+                    $response['error'][] = 'Whatsapp do Usuário já cadastrado !!!';
                 } elseif (!empty($datauser['id']) && !empty($data['cpf']) && users_informacaoBO::checkCpfDiff($data['cpf'], $datauser['id'])) {
                     /**
-                     * UPDATE fornecedor
+                     * UPDATE USUÁRIO F
                      */
                     $response['error'][] = 'CPF do Usuário já cadastrado !!!';
+                }  elseif (!empty($datauser['id']) && !empty($data['cpf']) && usuarioBO::checkPhoneDiff($datauser['phone'], $datauser['id'])) {
+                    /**
+                     * UPDATE USUÁRIO F
+                     */
+                    $response['error'][] = 'Whatsapp do Usuário já cadastrado !!!';
                 }
                 $data['data_nascimento'] = FUNCOES::formatarDatatoMYSQL($data['data_nascimento']);
             } else {
@@ -299,14 +312,24 @@ try {
                 $especifico = users_informacaoBO::getCpfCnpj($data['cnpj']);
                 if ((empty($datauser['id'])) && !empty($especifico)) {
                     /**
-                     * INSERT cliente
+                     * INSERT USUÁRIO J
                      */
                     $response['error'][] = 'CNPJ do Usuário  já cadastrada !!!';
+                } elseif (empty($datauser['id']) && !empty($checkphone)) {
+                    /**
+                     * INSERT USUÁRIO J
+                     */
+                    $response['error'][] = 'Whatsapp do Usuário já cadastrado !!!';
                 } elseif (!empty($datauser['id']) && !empty($data['cnpj']) && users_informacaoBO::checkCnpjDiff($data['cnpj'], $datauser['id'])) {
                     /**
-                     * UPDATE cliente
+                     * UPDATE USUÁRIO J
                      */
                     $response['error'][] = 'CNPJ do Usuário  já cadastrada !!!';
+                } elseif (!empty($datauser['id']) && !empty($data['cnpj']) && usuarioBO::checkPhoneDiff($datauser['phone'], $datauser['id'])) {
+                    /**
+                     * UPDATE USUÁRIO J
+                     */
+                    $response['error'][] = 'Whatsapp do Usuário já cadastrado !!!';
                 }
                 $data['data_fundacao'] = FUNCOES::formatarDatatoMYSQL($data['data_fundacao']);
             }
@@ -317,12 +340,12 @@ try {
                 $checkemail = users_informacaoBO::checkEmail($data['email']);
                 if (empty($datauser['id']) && !empty($checkemail)) {
                     /**
-                     * INSERT fornecedor
+                     * INSERT USUÁRIO
                      */
                     $response['error'][] = 'Email do Cliente já existente !!!';
                 } elseif ($datauser['id'] && users_informacaoBO::checkEmailDiff($data['email'], $datauser['id'])) {
                     /**
-                     * UPDATE fornecedor
+                     * UPDATE USUÁRIO
                      */
                     $response['error'][] = 'Email do Cliente já cadastrado !!!';
                 }
@@ -370,11 +393,12 @@ try {
                     /**
                      * (((((((((((((((((( inserir usuario  )))))))))))))))))))))))
                      */
+                    //if (empty($response['error'])) {
                     $endereco = serialize($data_endereco);
                     $data['endereco'] = $endereco;
                     unset($data['id']);
                     unset($datauser['id']);
-                    
+
                     $id = usuarioBO::salvarUsuario($datauser, 'users');
                     $data['users_id'] = $id;
                     require_once('../sealed/BO/tmpBO.php');
@@ -403,9 +427,9 @@ try {
                     users_informacaoBO::salvar($data, 'users_informacao');
                     $response['success'][] = 'Usuário inserido com sucesso!!';
                 }
-                if($_POST['pgname']){
-                   $pagina = $_POST['pgname'].'.php';
-                }else{
+                if ($_POST['pgname']) {
+                    $pagina = $_POST['pgname'] . '.php';
+                } else {
                     $pagina = 'usuario.php';
                 }
                 $response['link'][] = "$pagina?page=$page";
@@ -572,11 +596,10 @@ if (FUNCOES::isAjax()) {
                                     <select class="form-control" name="moeda">
                                         <option value="" selected="">selecione</option>
                                         <?php
-                                    
                                         if (is_array($moedas)) {
                                             foreach ($moedas as $moeda) {
                                                 ?>
-                                                <option value="<?= $moeda->simbolo ?>" <?php echo $data['moeda'] == $moeda->simbolo ? ' selected' : ''; ?>><?= $moeda->descricao.' ( '.$moeda->simbolo.' )' ?></option>
+                                                <option value="<?= $moeda->simbolo ?>" <?php echo $data['moeda'] == $moeda->simbolo ? ' selected' : ''; ?>><?= $moeda->descricao . ' ( ' . $moeda->simbolo . ' )' ?></option>
                                                 <?php
                                             }
                                         }
@@ -766,15 +789,15 @@ if (FUNCOES::isAjax()) {
                         </div>
 
                         <div class="text-right">
-                           <?php if (isset($_SESSION['admin_id'])) { ?>
-                            <div class="form-group" style="margin-top:1.2em;">
-                                <div class="checkbox pull-left">
-                                    <label>
-                                        <input type="checkbox" value="1"  name="bloqueado" <?= $data['bloqueado'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-danger">Bloqueado</span>
-                                    </label>
+                            <?php if (isset($_SESSION['admin_id'])) { ?>
+                                <div class="form-group" style="margin-top:1.2em;">
+                                    <div class="checkbox pull-left">
+                                        <label>
+                                            <input type="checkbox" value="1"  name="bloqueado" <?= $data['bloqueado'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-danger">Bloqueado</span>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                           <?php } ?>
+                            <?php } ?>
                             <a href="<?php echo ''; ?>" class="btn btn-danger">Cancelar</a>
                             <button type="submit" class="btn btn-success">Salvar</button>
                         </div>

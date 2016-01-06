@@ -35,7 +35,7 @@ $filterGET = array(
         'filter' => FILTER_SANITIZE_STRING
     ),
     'nome' => array(
-        'filter' => FILTER_SANITIZE_STRING
+        'filter' => FILTER_DEFAULT,
     ),
     'phone' => array(
         'filter' => FILTER_SANITIZE_STRING
@@ -67,12 +67,26 @@ if (!$dataGet['page']) {
 }
 
 try {
+    
+    if ($inputPOST['action'] == 'excluir') {
+        if (isset($inputPOST['ids'])) {
+            $params = is_array($dataGet) ? "?&" . http_build_query($dataGet) : '';
+            try {
+                usuarioBO::deletarUsers($inputPOST['ids']);
+                $response['success'][] = 'Registros excluídos com sucesso!';
+                $response['link'] = $_SERVER['PHP_SELF'] . $params;
+            } catch (Exception $err) {
+                $response['error'][] = $err->getMessage();
+            }
+        }
+    }
     if (empty($dataGet['busca'])) {
         $input = array('busca' => $dataGet['busca'], 'nome' => $dataGet['nome'], 'phone' => $dataGet['phone']);
         $count = usuarioBO::getListaCount();
         $paginador = new paginador($dataGet['page'], $count, 20, '', $input);
         $dadosusuarios = usuarioBO::getListaUsuarios($paginador->getPage());
     } else {
+        //$dataGetNome =  htmlspecialchars(addslashes($dataGet['nome']), ENT_NOQUOTES);
         $input = array('busca' => $dataGet['busca'], 'nome' => $dataGet['nome'], 'phone' => $dataGet['phone']);
         $count = usuarioBO::getListaCountPesquisa($input);
         $paginador = new paginador($dataGet['page'], $count, 20, '', $input);
@@ -173,8 +187,11 @@ if (FUNCOES::isAjax()) {
                 <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
                     <b>Novo Usuário</b>
                 </a>
+                <a class="btn btn-default excluir" >
+                    <span class="glyphicon glyphicon-trash excluir" aria-hidden="true"></span> Excluir
+                </a>
                 <a class="btn btn-danger" data-toggle="tooltip" title="PDF" 
-                   href="index.php?action=usuarios&<?= http_build_query($dataGet)?>" target="_blank">
+                   href="index.php?action=usuarios&<?= http_build_query($dataGet) ?>" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
                 <div class="form-group pull-right">
@@ -202,7 +219,6 @@ if (FUNCOES::isAjax()) {
                     </select>
                 </div>
             </ol>
-            <div class="well" style="background-color: #FFF">
                 <table class="table table-hover table-striped" >
                     <thead>
                         <tr>
@@ -223,12 +239,22 @@ if (FUNCOES::isAjax()) {
                                 }
                                 ?>
                                 <tr <?php echo $dado->bloqueado ? 'class=""' : '' ?> >
-                                    <td class="" style="width:10px;"> 
+                                    <td class="" width='7px'> 
+                                        <input name="selecao" value="<?php echo $dado->id; ?>" type="checkbox">
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
-                                        <?= $cont; ?>
                                     </td>
+        <!--                                <td class="" style="width:10px;"> 
+                                        <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
+                                        <?//= $cont; ?>
+                                    </td>-->
                                     <td style="width:150px;"><?= $descricao; ?></td>
-                                    <td style="width:100px;"><span class="label label-default"><?= $dado->phone; ?></span></td>
+                                    <td style="width:100px;">
+                                        <?php if (!$dado->bloqueado) { ?>
+                                            <span class="label label-default"><?= $dado->phone; ?></span>
+                                        <?php } else { ?>
+                                            <span class="label label-danger" style="text-decoration: line-through;"><?= $dado->phone; ?></span>
+                                        <?php } ?>
+                                    </td>
                                     <td style="width:100px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
                                            href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario">
@@ -242,11 +268,10 @@ if (FUNCOES::isAjax()) {
                                            href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
                                             <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                                         </a>
-
-                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
+                                          <!--<a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
                                            href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
                                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                        </a>
+                                        </a>-->
                                     </td>
                                 </tr>
                                 <?php
@@ -256,7 +281,6 @@ if (FUNCOES::isAjax()) {
                         ?>
                     </tbody>
                 </table>
-            </div>
             <div class="text-center" id="paginador_clientes">
                 <?php
                 echo $paginador->getPagi();

@@ -24,25 +24,24 @@ if (isset($_SESSION['admin_id'])) {
 switch ($action) {
     case '_usuario' :
         try {
-            
             $dados = usuarioBO::ajax_autocomplete_usuarios($request);
             if ($dados) {
                 foreach ($dados as $campo) {
                     $id = $campo->users_id;
-                    $nome = $campo->nome;
+                    $nome = filter_var($campo->nome,FILTER_SANITIZE_STRING);
                      if (empty($nomeGet)) {
                          $value = $campo->users_id;
                      }else{
-                         $value = $campo->nome;
+                         $value = filter_var($campo->nome,FILTER_SANITIZE_STRING);
                      }
                     ?>
                     <li onselect="this.setText('<?php echo $nome; ?>', '<?php echo $value; ?>').setValue('<?php echo $value; ?>', '')">
                         <?php echo str_ireplace($request, '<strong>' . $request . '</strong>', $nome); ?>
-                    </li>
-                    <?php
+                    </li> 
+                    <?php 
                 }
 
-                if (!$dados) {
+                if (!$dados){
                     ?>
                     <li onselect="this.setText('<?php echo $request; ?>', '');">
                         <?php echo str_ireplace($request, '<strong>' . $request . '</strong>', $request); ?>

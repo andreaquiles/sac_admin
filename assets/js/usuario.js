@@ -3,16 +3,17 @@ $(document).tooltip({
     selector: '[data-toggle="tooltip"]'
 });
 inserirCampo = function (value,input) {
-    if (input == 'nome') {
+    if (input === 'nome') {
         $('input[name=nome]').val(value);
     }
 }
 new Autocomplete("nome", function () {
+               
     this.setValue = function (value) {
         inserirCampo(value,'nome');
     };
     this.setText = function (nome, id) {
-        this.text.value = nome;
+        this.text.value = nome;//nome.replace(/'/g, "\\'"); 
         return this;
     };
     if (this.value.length < 1 && this.isNotClick)
