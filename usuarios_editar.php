@@ -115,6 +115,9 @@ $filterPostUser = array(
     ),
     'bloqueado' => array(
         'filter' => FILTER_VALIDATE_INT
+    ),
+    'modulo_fatura' => array(
+        'filter' => FILTER_VALIDATE_INT
     )
 );
 
@@ -260,6 +263,9 @@ try {
             }
             if (isset($_SESSION['revenda_id'])) {
                 unset($datauser['bloqueado']);
+            }
+             if (isset($_SESSION['revenda_id'])) {
+                unset($datauser['modulo_fatura']);
             }
             $data_financeiro['data_vencimento'] = FUNCOES::formatarDatatoMYSQL($data_financeiro['data_vencimento']);
             unset($data['page']);
@@ -797,6 +803,15 @@ if (FUNCOES::isAjax()) {
                                         </label>
                                     </div>
                                 </div>
+                            
+                               <div class="form-group" style="margin-top:1.2em;">
+                                    <div class="checkbox pull-left">
+                                        <label style="margin-left:1.2em;">
+                                            <input type="checkbox" value="1"  name="modulo_fatura" <?= $data['modulo_fatura'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-success">Módulo fatura</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            
                             <?php } ?>
                             <a href="<?php echo ''; ?>" class="btn btn-danger">Cancelar</a>
                             <button type="submit" class="btn btn-success">Salvar</button>

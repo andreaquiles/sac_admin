@@ -144,56 +144,64 @@ $data = filter_input_array(INPUT_POST, $filterPOST);
 $data_endereco = filter_input_array(INPUT_POST, $filterPostEndereco);
 $dataGet = filter_input_array(INPUT_GET, $filterGET);
 
+//if (isset($_FILES["myfile"]["name"])) {
+// echo 'filemname:'.$_FILES["myfile"]["name"];
+//}
 //
 try {
     if ($data) {
         $response = array();
         if (empty($data['nome'])) {
             $response['error'][] = 'Preencher nome';
-        } else if ($data_endereco['rua'] == NULL) {
-            $response['error'][] = 'Preencher rua';
-        } else if ($data_endereco['numero'] == NULL) {
-            $response['error'][] = 'Preencher numero';
-        } else if ($data_endereco['bairro'] == NULL) {
-            $response['error'][] = 'Preencher bairro';
-        } else if ($data_endereco['cidade'] == NULL) {
-            $response['error'][] = 'Preencher cidade';
-        } else if ($data_endereco['estado'] == NULL) {
-            $response['error'][] = 'Preencher estado';
-        } else if ($data_endereco['cep'] == NULL) {
-            $response['error'][] = 'Preencher cep';
-        } else if ($data_endereco['tel_fixo'] == NULL) {
-            $response['error'][] = 'Preencher telefone';
-        } else if ($data_endereco['celular'] == NULL) {
-            $response['error'][] = 'Preencher celular';
-        } else if ($data_endereco['whatsapp'] == NULL) {
-            $response['error'][] = 'Preencher whatsapp';
-        } else if ($data['email'] == NULL) {
-            $response['error'][] = 'E-mail Inválido!';
-        } else if ($data['senha'] == NULL) {
-            $response['error'][] = 'Preencher senha corretamente (mínimo 5 caracteres)';
-        } else if ($data['tpPessoa'] == NULL) {
-            $response['error'][] = 'Pessoa Tipo Inválido!';
-        } else if (!empty($data_org['cpf']) && $data['cpf'] == NULL) {
-            $response['error'][] = 'CPF Inválido!';
-        } else if (!empty($data_org['rg']) && $data['rg'] == NULL) {
-            $response['error'][] = 'RG Inválido!';
-        } else if (!empty($data_org['data_nascimento']) && $data['data_nascimento'] == NULL) {
-            $response['error'][] = 'Data Nascimento Inválido!';
-        } else if (!empty($data_org['cnpj']) && $data['cnpj'] == NULL) {
-            $response['error'][] = 'CNPJ Inválido!';
-        } else if (!empty($data_org['razao_social']) && $data['razao_social'] == NULL) {
-            $response['error'][] = 'Razão Social Inválido!';
-        } else if (!empty($data_org['inscricao_estadual']) && $data['inscricao_estadual'] == NULL) {
-            $response['error'][] = 'Inscrição Estadual Inválido!';
-        } else if (!empty($data_org['inscricao_municipal']) && $data['inscricao_municipal'] == NULL) {
-            $response['error'][] = 'Inscrição Municipal Inválido!';
-        } else if (!empty($data_org['data_fundacao']) && $data['data_fundacao'] == NULL) {
-            $response['error'][] = 'Data Fundacao Inválido!';
+//        } else if ($data_endereco['rua'] == NULL) {
+//            $response['error'][] = 'Preencher rua';
+//        } else if ($data_endereco['numero'] == NULL) {
+//            $response['error'][] = 'Preencher numero';
+//        } else if ($data_endereco['bairro'] == NULL) {
+//            $response['error'][] = 'Preencher bairro';
+//        } else if ($data_endereco['cidade'] == NULL) {
+//            $response['error'][] = 'Preencher cidade';
+//        } else if ($data_endereco['estado'] == NULL) {
+//            $response['error'][] = 'Preencher estado';
+//        } else if ($data_endereco['cep'] == NULL) {
+//            $response['error'][] = 'Preencher cep';
+//        } else if ($data_endereco['tel_fixo'] == NULL) {
+//            $response['error'][] = 'Preencher telefone';
+//        } else if ($data_endereco['celular'] == NULL) {
+//            $response['error'][] = 'Preencher celular';
+//        } else if ($data_endereco['whatsapp'] == NULL) {
+//            $response['error'][] = 'Preencher whatsapp';
+//        } else if ($data['email'] == NULL) {
+//            $response['error'][] = 'E-mail Inválido!';
+//        } else if ($data['senha'] == NULL) {
+//            $response['error'][] = 'Preencher senha corretamente (mínimo 5 caracteres)';
+//        } else if ($data['tpPessoa'] == NULL) {
+//            $response['error'][] = 'Pessoa Tipo Inválido!';
+//        } else if (!empty($data_org['cpf']) && $data['cpf'] == NULL) {
+//            $response['error'][] = 'CPF Inválido!';
+//        } else if (!empty($data_org['rg']) && $data['rg'] == NULL) {
+//            $response['error'][] = 'RG Inválido!';
+//        } else if (!empty($data_org['data_nascimento']) && $data['data_nascimento'] == NULL) {
+//            $response['error'][] = 'Data Nascimento Inválido!';
+//        } else if (!empty($data_org['cnpj']) && $data['cnpj'] == NULL) {
+//            $response['error'][] = 'CNPJ Inválido!';
+//        } else if (!empty($data_org['razao_social']) && $data['razao_social'] == NULL) {
+//            $response['error'][] = 'Razão Social Inválido!';
+//        } else if (!empty($data_org['inscricao_estadual']) && $data['inscricao_estadual'] == NULL) {
+//            $response['error'][] = 'Inscrição Estadual Inválido!';
+//        } else if (!empty($data_org['inscricao_municipal']) && $data['inscricao_municipal'] == NULL) {
+//            $response['error'][] = 'Inscrição Municipal Inválido!';
+//        } else if (!empty($data_org['data_fundacao']) && $data['data_fundacao'] == NULL) {
+//            $response['error'][] = 'Data Fundacao Inválido!';
+//        }
         } else {
             /**
              * salvar fornecedor
              */
+            if (isset($_FILES["myfile"]["name"])) {
+                $logodir = FUNCOES::Upload($_FILES, 'includes/images/revendas/', FUNCOES::getExtensionImages());
+                $data['logo'] = $logodir;
+            }
             $page = $data['page'];
             unset($data['page']);
             if ($data['tpPessoa'] == 'F') {
@@ -208,18 +216,18 @@ try {
                 /**
                  * verificações cpf e email existente
                  */
-                $especifico = revendedorBO::getCpfCnpj($data['cpf']);
-                if (empty($data['revenda_id']) && !empty($especifico['cpf'])) {
-                    /**
-                     * INSERT fornecedor
-                     */
-                    $response['error'][] = 'CPF da Revenda já cadastrado !!!';
-                } elseif ($data['revenda_id'] && revendedorBO::checkCpfDiff($data['cpf'], $data['revenda_id'])) {
-                    /**
-                     * UPDATE fornecedor
-                     */
-                    $response['error'][] = 'CPF Revenda já cadastrado !!!';
-                }
+//                $especifico = revendedorBO::getCpfCnpj($data['cpf']);
+//                if (empty($data['revenda_id']) && !empty($especifico['cpf'])) {
+//                    /**
+//                     * INSERT fornecedor
+//                     */
+//                    $response['error'][] = 'CPF da Revenda já cadastrado !!!';
+//                } elseif ($data['revenda_id'] && revendedorBO::checkCpfDiff($data['cpf'], $data['revenda_id'])) {
+//                    /**
+//                     * UPDATE fornecedor
+//                     */
+//                    $response['error'][] = 'CPF Revenda já cadastrado !!!';
+//                }
                 $data['data_nascimento'] = FUNCOES::formatarDatatoMYSQL($data['data_nascimento']);
             } else {
                 /**
@@ -228,18 +236,18 @@ try {
                 unset($data['cpf']);
                 unset($data['rg']);
                 unset($data['data_nascimento']);
-                $especifico = revendedorBO::getCpfCnpj($data['cnpj']);
-                if ((empty($data['revenda_id'])) && !empty($especifico)) {
-                    /**
-                     * INSERT fornecedor
-                     */
-                    $response['error'][] = 'CNPJ da Revenda  já cadastrada !!!';
-                } elseif ($data['revenda_id'] && revendedorBO::checkCnpjDiff($data['cnpj'], $data['revenda_id'])) {
-                    /**
-                     * UPDATE fornecedor
-                     */
-                    $response['error'][] = 'CNPJ da Revenda  já cadastrada !!!';
-                }
+//                $especifico = revendedorBO::getCpfCnpj($data['cnpj']);
+//                if ((empty($data['revenda_id'])) && !empty($especifico)) {
+//                    /**
+//                     * INSERT fornecedor
+//                     */
+//                    $response['error'][] = 'CNPJ da Revenda  já cadastrada !!!';
+//                } elseif ($data['revenda_id'] && revendedorBO::checkCnpjDiff($data['cnpj'], $data['revenda_id'])) {
+//                    /**
+//                     * UPDATE fornecedor
+//                     */
+//                    $response['error'][] = 'CNPJ da Revenda  já cadastrada !!!';
+//                }
                 $data['data_fundacao'] = FUNCOES::formatarDatatoMYSQL($data['data_fundacao']);
             }
             /**
@@ -280,7 +288,7 @@ try {
                     $response['success'][] = 'Revenda atualizado com sucesso!!';
                 } else {
                     /**
-                     * inserir fornecedor
+                     * inserir revendedor
                      */
                     $endereco = serialize($data_endereco);
                     $data['endereco'] = $endereco;
@@ -360,7 +368,7 @@ if (FUNCOES::isAjax()) {
                 <li><a href="revenda.php">Revendas</a></li>
             </ol>
             <div class="well">
-                <form role="form" method="post">
+                <form role="form" class="submitFileType" enctype="multipart/form-data" method="post">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group form-group-lg">
@@ -374,7 +382,7 @@ if (FUNCOES::isAjax()) {
                                     <label for="razao_social">Email</label>
                                     <input type="text" class="form-control" name="email" placeholder="" value="<?php echo $data['email']; ?>" >
                                 </div>
-                                 <div class="form-group col-sm-3">
+                                <div class="form-group col-sm-3">
                                     <label for="cnpj">Título (p/ visual. do usuário)</label>
                                     <input type="text" class="form-control" name="titulo" placeholder="" value="<?php echo $data['titulo']; ?>" >
                                 </div>
@@ -431,6 +439,11 @@ if (FUNCOES::isAjax()) {
                                     <div class="form-group col-sm-2">
                                         <label for="razao_social">Whatsapp</label>
                                         <input type="text" class="form-control" name="whatsapp" placeholder="" value="<?php echo $endereco['whatsapp']; ?>">
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <label for="razao_social">Logo</label>
+                                        <input type="file" class="" name="myfile" >
+<!--                                        <input type="text" class="form-control" name="whatsapp" placeholder="" value="<?php echo $endereco['whatsapp']; ?>">-->
                                     </div>
                                 </div>
                             </div>
@@ -577,6 +590,6 @@ if (FUNCOES::isAjax()) {
             echo '<script> $(\'.pJuridica\').hide(); $(\'.pFisica\').show();</script>';
         }
         ?>
-        <script src="assets/js/gerenciador.min.js"></script>
+        <script src="assets/js/gerenciador.min_dev.js"></script>
     </body>
 </html>

@@ -111,7 +111,7 @@ if (FUNCOES::isAjax()) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="../public/assets/js/bootstrap-modal.js" rel="stylesheet" />
-        <link href="../public/assets/css/" rel="stylesheet" />
+        <link href="../public/assets/css" rel="stylesheet" />
         <link href="../public/assets/css/bootstrap.min.css" rel="stylesheet" />
         <link href="../public/assets/css/bootstrap-responsive.min.css" rel="stylesheet" />
         <script src="assets/js/jquery.min.js"></script>

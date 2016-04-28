@@ -102,10 +102,9 @@ messagesModal = function (data) {
 };
 
 
-$('form:not(.noAjax)').submit(function (e) {
+$('form:not(.noAjax,.submitFileType)').submit(function (e) {
     e.preventDefault();
     var form = $(this);
-
     form.find('[type=submit]').attr('data-loading-text', 'Aguarde...').button('loading');
 
     $.post(form.attr('action'), form.serialize(), function (data) {
@@ -115,6 +114,37 @@ $('form:not(.noAjax)').submit(function (e) {
     }).fail(function () {
         alert('Tente mais tarde.');
     });
+});
+
+$('.submitFileType').submit(function (e) {
+    e.preventDefault();
+    var form = $(this);
+    form.find('[type=submit]').attr('data-loading-text', 'Aguarde...').button('loading');
+
+    if (window.FormData !== undefined)  // for HTML5 browsers
+    {
+
+        var formData = new FormData(this);
+        $.ajax({
+            type: "POST",
+            data: formData,
+            dataType: "json",
+            mimeType: "multipart/form-data",
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data, textStatus, jqXHR)
+            {
+                messagesModal(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) { }
+        }).always(function () {
+            form.find('[type=submit]').button('reset');
+        }).fail(function () {
+            alert('Tente mais tarde.');
+        });
+        e.preventDefault();
+    }
 });
 
 $("a.Ajax, button.Ajax").on("click", function (e) {
@@ -156,7 +186,7 @@ $('.excluir').click(function (e) {
     var btn = $(this);
     var page = $("table input[name=page]").val();
     if (confirm('Deseja remover o(s) item(s) selecionado(s)?')) {
-        
+
         btn.attr('data-loading-text', 'Aguarde...').button('loading');
         var ids = $("table input[name=selecao]:checkbox:checked").map(function () {
             return $(this).val();

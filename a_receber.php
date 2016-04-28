@@ -4,6 +4,7 @@ require_once('../sealed/BO/usuarioBO.php');
 require_once '../sealed/controler/paginador.php';
 require_once('../sealed/BO/financeiroBO.php');
 include_once "../lib/utils/funcoes.php";
+
 /**
  * autenticações 
  */
