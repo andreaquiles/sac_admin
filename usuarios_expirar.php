@@ -1,6 +1,7 @@
 <?php
 include_once '../sealed/init.php';
 require_once('../sealed/BO/usuarioBO.php');
+require_once('../sealed/BO/usuario_expiracaoBO.php');
 require_once '../sealed/controler/paginador.php';
 include_once "../lib/utils/funcoes.php";
 /**
@@ -55,13 +56,13 @@ $dataGet = filter_input_array(INPUT_GET, $filterGET);
 
 
 try {
-    $count = usuarioBO::getListaBloqueadosCount();
+    $count = usuarioBO::getExpirarCount();
     if (!$dataGet['page']) {
         $dataGet['page'] = 1;
     }
 
     $paginador = new paginador($dataGet['page'], $count, 20, '', array('pesquisa' => $inputGET['pesquisa']));
-    $dadosusers = usuarioBO::getListaUsuariosBloqueados($paginador->getPage());
+    $dados_expirar = usuarioBO::getUsuariosExpirar($paginador->getPage());
     /**
      * action via post EXCLUIR
      */
@@ -143,25 +144,26 @@ if (FUNCOES::isAjax()) {
             <div id="paginador_info_clientes">
                 <?php echo $paginador->getInfo(); ?>
             </div>
+
+
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
-                <li class="active">Usuários</li>
-
+                <li class="active">Usuários expirados</li>
             </ol>
             <ol class="breadcrumb" >
                 <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
                     <b>Novo Usuário</b>
                 </a>
                 <a class="btn btn-danger" data-toggle="tooltip" title="PDF" 
-                   href="index.php?action=usuarios_bloqueados" target="_blank">
+                   href="index.php?action=usuarios_expirado&page=<?= $dataGet['page'] ?>" target="_blank">
                     <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
                 </a>
                 <div class="form-group col-sm-2 pull-right">
                     <select class="form-control" name="planos_assinatura_id">
                         <option value="usuario">Todos</option>
-                        <option value="usuario_atraso">Usuários com atraso</option>
-                        <option value="usuario_bloqueados" selected="">Usuários bloqueados</option>
-                        <option value="usuarios_expirar">Usuários expirados</option>
+                        <option value="usuario_atraso" >Usuários com atraso</option>
+                        <option value="usuario_bloqueados">Usuários bloqueados</option>
+                        <option value="usuarios_expirar" selected="">Usuários expirados</option>
                     </select>
                 </div>
             </ol>
@@ -170,50 +172,63 @@ if (FUNCOES::isAjax()) {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Usuário</th>
+                            <th>Usúario</th>
                             <th>Whatsapp</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $cont = 1;
-                        if ($dadosusers) {
-                            foreach ($dadosusers as $dado) {
-                                if ($dado->nome) {
-                                    $descricao = $dado->nome;
-                                } elseif ($dado->login) {
-                                    $descricao = $dado->login;
-                                }
-                                ?>
-                                <tr <?php echo $dado->bloqueado ? 'class="danger"' : '' ?> >
-                                    <td class="" style="width:10px;"> 
-                                        <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
-                                     <?= $cont; ?>
-                                    </td>
-                                    <td style="width:150px;"><?= $descricao; ?></td>
-                                    <td style="width:100px;"><span class="label label-default"><?= $dado->phone; ?></span></td>
-                                    <td style="width:100px;" class="text-right">
-                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
-                                           href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario_bloqueados">
-                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                        </a>
-                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
-                                           href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
-                                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                                        </a>
-                                        <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
-                                           href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-                                        </a>
+                        $dtAtual = date("Y-m-d");
+                        if ($dados_expirar) {
+                            foreach ($dados_expirar as $dado) {
+                               // $expiracao = usuario_expiracaoBO::getExpiracaoEspecifica($dado->id);
+                                //$datalimite = FUNCOES::ContagemDatas($expiracao->data, $expiracao->dias_login);
+                               // $diff = FUNCOES::timetoDays(strtotime($datalimite) - strtotime($dtAtual));
+                               // if ($diff <= 5) {
+                                    if ($dado->nome) {
+                                        $descricao = $dado->nome;
+                                    } elseif ($dado->login) {
+                                        $descricao = $dado->login;
+                                    }
+                                    ?>
+                                    <tr  <?php echo ($dado->DiffDate < 0 ) ? 'class="danger"' : '' ?> >
+                                        <td class="" style="width:10px;"> 
+                                            <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
+                                            <?= $cont; ?>
+                                        </td>
+                                        <td style="width:150px;"><?= $descricao; 
+                                             if ($dado->DiffDate < 0) {
+                                                echo ' <span class="label label-danger">' . abs($dado->DiffDate) . ' dias expirado </span>';
+                                            } else {
+                                                echo ' <span class="label label-warning">' . ($dado->DiffDate) . ' dias para expirar </span>';
+                                            }
+                                            ?></td>
+                                        <td style="width:100px;"><span class="label label-default"><?= ($dado->phone); ?></span></td>
+                                        
+                                        <td style="width:100px;" class="text-right">
+                                            <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
+                                               href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario_atraso">
+                                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                            </a>
+                                            <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
+                                               href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
+                                                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                                            </a>
+                                            <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
+                                               href="config.php?user_id=<?= $dado->id; ?>&expirar=true&page=<?= $dataGet['page']; ?>">
+                                                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                                            </a>
 
-                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
-                                           href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php
-                                $cont++;
+                                            <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
+                                               href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
+                                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    $cont++;
+                               // }
                             }
                         }
                         ?>
@@ -226,6 +241,8 @@ if (FUNCOES::isAjax()) {
                 ?>
             </div>
         </div>
+
+
 
         <div id="footer" class="navbar-default">
             <div class="container">

@@ -216,6 +216,7 @@ if (FUNCOES::isAjax()) {
                         <option value="usuario" selected="">Todos</option>
                         <option value="usuario_atraso">Usuários com atraso</option>
                         <option value="usuario_bloqueados">Usuários bloqueados</option>
+                        <option value="usuarios_expirar">Usuários expirados</option>
                     </select>
                 </div>
             </ol>

@@ -28,6 +28,9 @@ $filterGET = array(
     ),
     'page' => array(
         'filter' => FILTER_VALIDATE_INT
+    ),
+    'expirar' => array(
+        'filter' => FILTER_VALIDATE_BOOLEAN
     )
 );
 
@@ -94,8 +97,8 @@ if ($dataPost) {
                     $rowGetExpiracao = usuario_expiracaoBO::getExpiracaoEspecifica($dataPostLimite['user_id']);
                     if ($rowGetExpiracao->users_expiracao_id) {
                         usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao', $dataPostLimite['user_id']);
-                    }else{
-                       usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao');
+                    } else {
+                        usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao');
                     }
                     $response['success'][] = 'Registro alterado com sucesso!';
                 } catch (Exception $ex) {
@@ -112,7 +115,11 @@ if ($dataPost) {
             config_BO::salvar($dataPost, 'config', $dataPost['user_id']);
         }
         $response['success'][] = 'Configuração efetuada com sucesso!!!';
-        $response['link'] = "usuario.php?page=" . $page;
+        if (empty($_POST['expirar'])) {
+            $response['link'] = "usuario.php?page=" . $page;
+        } else {
+            $response['link'] = "usuarios_expirar.php?page=" . $page;
+        }
     } catch (Exception $ex) {
         $response['error'][] = $ex->getMessage();
     }
@@ -285,6 +292,7 @@ if (FUNCOES::isAjax()) {
                                             <label class="radio inline">
                                                 <input type="radio" name="uso_respostas_lote" id="optionsRadios2" value="1" <?php echo $dado->uso_respostas_lote ? 'checked' : ''; ?>>
                                                 <input type=hidden name="user_id" value="<?= $dataGet['user_id']; ?>">
+                                                <input type=hidden name="expirar" value="<?= $dataGet['expirar']; ?>">
                                                 Desbloquear
                                             </label>
                                             <input type=hidden name="page" value="<?= $dataGet['page']; ?>">

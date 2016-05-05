@@ -88,6 +88,13 @@ try {
         $dadosExportarPDF = usuarioBO::getListaUsuariosBloqueados(LIMIT_REGISTROS_RELATORIOS);
         require_once('../sealed/controler/pdf.php');
         exit();
+    } elseif ($dataGet['action'] == 'usuarios_expirado') {
+        require_once ( '../lib/fpdf/fpdf.php');
+        require_once('../sealed/BO/financeiroBO.php');
+        $relatorio = "usuarios_expirados";
+        $dadosExportarPDF = usuarioBO::getUsuariosExpirar(LIMIT_REGISTROS_RELATORIOS);
+        require_once('../sealed/controler/pdf.php');
+        exit();
     }
 } catch (Exception $ex) {
     $response['error'][] = $ex->getMessage();
