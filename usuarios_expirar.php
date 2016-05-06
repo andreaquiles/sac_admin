@@ -60,7 +60,6 @@ try {
     if (!$dataGet['page']) {
         $dataGet['page'] = 1;
     }
-
     $paginador = new paginador($dataGet['page'], $count, 20, '', array('pesquisa' => $inputGET['pesquisa']));
     $dados_expirar = usuarioBO::getUsuariosExpirar($paginador->getPage());
     /**
@@ -182,10 +181,6 @@ if (FUNCOES::isAjax()) {
                         $dtAtual = date("Y-m-d");
                         if ($dados_expirar) {
                             foreach ($dados_expirar as $dado) {
-                               // $expiracao = usuario_expiracaoBO::getExpiracaoEspecifica($dado->id);
-                                //$datalimite = FUNCOES::ContagemDatas($expiracao->data, $expiracao->dias_login);
-                               // $diff = FUNCOES::timetoDays(strtotime($datalimite) - strtotime($dtAtual));
-                               // if ($diff <= 5) {
                                     if ($dado->nome) {
                                         $descricao = $dado->nome;
                                     } elseif ($dado->login) {
@@ -216,7 +211,7 @@ if (FUNCOES::isAjax()) {
                                                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                                             </a>
                                             <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
-                                               href="config.php?user_id=<?= $dado->id; ?>&expirar=true&page=<?= $dataGet['page']; ?>">
+                                               href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
                                                 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                                             </a>
 

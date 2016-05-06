@@ -114,12 +114,7 @@ if ($dataPost) {
         } else {
             config_BO::salvar($dataPost, 'config', $dataPost['user_id']);
         }
-        $response['success'][] = 'Configuração efetuada com sucesso!!!';
-        if (empty($_POST['expirar'])) {
-            $response['link'] = "usuario.php?page=" . $page;
-        } else {
-            $response['link'] = "usuarios_expirar.php?page=" . $page;
-        }
+        $response['link'] = 'javascript:history.go(-1)';
     } catch (Exception $ex) {
         $response['error'][] = $ex->getMessage();
     }
