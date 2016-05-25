@@ -216,9 +216,9 @@ try {
 //        else if ($datauser['login'] == NULL) {
 //            $response['error'][] = 'Preencher login';
 //        } 
-//        else if ($datauser['passwlogin'] == NULL) {
-//            $response['error'][] = 'Preencher senha corretamanete (mínimo 5 caracteres)';
-//        } 
+        else if ($datauser['passwlogin'] == NULL) {
+            $response['error'][] = 'Preencher senha corretamanete (mínimo 5 caracteres)';
+        } 
 //        else if ($data['planos_assinatura_id'] == NULL) {
 //            $response['error'][] = 'Preencher plano de assinatura';
 //        } 

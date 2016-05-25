@@ -185,13 +185,13 @@ if (FUNCOES::isAjax()) {
                                     $descricao = $dado->login;
                                 }
                                 ?>
-                                <tr <?php echo $dado->bloqueado ? 'class="danger"' : '' ?> >
+                                <tr <?php echo $dado->bloqueado ? 'class=""' : '' ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                      <?= $cont; ?>
                                     </td>
                                     <td style="width:150px;"><?= $descricao; ?></td>
-                                    <td style="width:100px;"><span class="label label-default"><?= $dado->phone; ?></span></td>
+                                    <td style="width:100px;"><span class="label label-danger" style="text-decoration: line-through;"><?= $dado->phone; ?></span></td>
                                     <td style="width:100px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
                                            href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario_bloqueados">
