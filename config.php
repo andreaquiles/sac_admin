@@ -329,10 +329,7 @@ if (FUNCOES::isAjax()) {
                                                 </div>
                                             </fieldset>
                                         </div>
-
                                     </div>
-
-
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-success">Salvar</button>
                                     </div>

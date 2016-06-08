@@ -69,7 +69,7 @@ try {
         $relatorio = "usuarios";
         if (empty($dataGet['busca'])) {
             $dadosExportarPDF = usuarioBO::getListaUsuarios(LIMIT_REGISTROS_RELATORIOS);
-        }else{
+        } else {
             $dadosExportarPDF = usuarioBO::getListaUsuariosPesquisa($dataGet, LIMIT_REGISTROS_RELATORIOS);
         }
         require_once('../sealed/controler/pdf.php');
@@ -83,16 +83,23 @@ try {
         exit();
     } elseif ($dataGet['action'] == 'usuarios_bloqueados') {
         require_once ( '../lib/fpdf/fpdf.php');
-        require_once('../sealed/BO/financeiroBO.php');
+        //require_once('../sealed/BO/financeiroBO.php');
         $relatorio = "usuarios_bloqueados";
         $dadosExportarPDF = usuarioBO::getListaUsuariosBloqueados(LIMIT_REGISTROS_RELATORIOS);
         require_once('../sealed/controler/pdf.php');
         exit();
     } elseif ($dataGet['action'] == 'usuarios_expirado') {
         require_once ( '../lib/fpdf/fpdf.php');
-        require_once('../sealed/BO/financeiroBO.php');
+        //require_once('../sealed/BO/financeiroBO.php');
         $relatorio = "usuarios_expirados";
         $dadosExportarPDF = usuarioBO::getUsuariosExpirar(LIMIT_REGISTROS_RELATORIOS);
+        require_once('../sealed/controler/pdf.php');
+        exit();
+    } elseif ($dataGet['action'] == 'usuarios_novos') {
+        require_once ( '../lib/fpdf/fpdf.php');
+        //require_once('../sealed/BO/financeiroBO.php');
+        $relatorio = "usuarios_novos";
+        $dadosExportarPDF = usuarioDAO::getUsuariosNovos(LIMIT_REGISTROS_RELATORIOS);
         require_once('../sealed/controler/pdf.php');
         exit();
     }

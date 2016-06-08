@@ -28,15 +28,15 @@ switch ($action) {
             if ($dados) {
                 foreach ($dados as $campo) {
                     $id = $campo->users_id;
-                    $nome = filter_var($campo->nome,FILTER_SANITIZE_STRING);
+                    $login = filter_var($campo->login,FILTER_SANITIZE_STRING);
                      if (empty($nomeGet)) {
                          $value = $campo->users_id;
                      }else{
-                         $value = filter_var($campo->nome,FILTER_SANITIZE_STRING);
+                         $value = filter_var($campo->login,FILTER_SANITIZE_STRING);
                      }
                     ?>
-                    <li onselect="this.setText('<?php echo $nome; ?>', '<?php echo $value; ?>').setValue('<?php echo $value; ?>', '')">
-                        <?php echo str_ireplace($request, '<strong>' . $request . '</strong>', $nome); ?>
+                    <li onselect="this.setText('<?php echo $login; ?>', '<?php echo $value; ?>').setValue('<?php echo $value; ?>', '')">
+                        <?php echo str_ireplace($request, '<strong>' . $request . '</strong>', $login); ?>
                     </li> 
                     <?php 
                 }

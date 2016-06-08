@@ -160,6 +160,7 @@ if (FUNCOES::isAjax()) {
                 <div class="form-group col-sm-2 pull-right">
                     <select class="form-control" name="planos_assinatura_id">
                         <option value="usuario">Todos</option>
+                        <option value="usuarios_novos">Usuários novos</option>
                         <option value="usuario_atraso" >Usuários com atraso</option>
                         <option value="usuario_bloqueados">Usuários bloqueados</option>
                         <option value="usuarios_expirar" selected="">Usuários expirados</option>
@@ -181,18 +182,13 @@ if (FUNCOES::isAjax()) {
                         $dtAtual = date("Y-m-d");
                         if ($dados_expirar) {
                             foreach ($dados_expirar as $dado) {
-                                    if ($dado->nome) {
-                                        $descricao = $dado->nome;
-                                    } elseif ($dado->login) {
-                                        $descricao = $dado->login;
-                                    }
                                     ?>
                                     <tr  <?php echo ($dado->DiffDate < 0 ) ? 'class="danger"' : '' ?> >
                                         <td class="" style="width:10px;"> 
                                             <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                             <?= $cont; ?>
                                         </td>
-                                        <td style="width:150px;"><?= $descricao; 
+                                        <td style="width:150px;"><?= $dado->login; 
                                              if ($dado->DiffDate < 0) {
                                                 echo ' <span class="label label-danger">' . abs($dado->DiffDate) . ' dias expirado </span>';
                                             } else {

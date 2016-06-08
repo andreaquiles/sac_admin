@@ -411,10 +411,10 @@ try {
                     require_once('../sealed/BO/usuario_expiracaoBO.php');
                     $dataPostLimite['user_id'] = $id;
                     tmpBO::salvar($dataPostLimite, 'tmp');
-                    $dataPostLimite['limite_auto_resposta'] = 10;
+                    $dataPostLimite['limite_auto_resposta'] = 1;
                     $dataPostLimite['dias_auto_resposta'] = 15;
                     $dataPostLimite['dias_login'] = 15;
-                    $dataPostLimite['limite_atendentes'] = 2;
+                    $dataPostLimite['limite_atendentes'] = 1;
                     $dataPostLimite['data'] = date("Y-m-d H:i:s");
                     usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao');
 

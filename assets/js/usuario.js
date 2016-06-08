@@ -7,10 +7,10 @@ inserirCampo = function (value,input) {
         $('input[name=nome]').val(value);
     }
 }
-new Autocomplete("nome", function () {
+new Autocomplete("login", function () {
                
     this.setValue = function (value) {
-        inserirCampo(value,'nome');
+        inserirCampo(value,'login');
     };
     this.setText = function (nome, id) {
         this.text.value = nome;//nome.replace(/'/g, "\\'"); 

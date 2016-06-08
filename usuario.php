@@ -34,10 +34,13 @@ $filterGET = array(
     'busca' => array(
         'filter' => FILTER_SANITIZE_STRING
     ),
-    'nome' => array(
+    'login' => array(
         'filter' => FILTER_DEFAULT,
     ),
     'phone' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'data' => array(
         'filter' => FILTER_SANITIZE_STRING
     ),
     'pgnome' => array(
@@ -67,7 +70,7 @@ if (!$dataGet['page']) {
 }
 
 try {
-    
+
     if ($inputPOST['action'] == 'excluir') {
         if (isset($inputPOST['ids'])) {
             $params = is_array($dataGet) ? "?&" . http_build_query($dataGet) : '';
@@ -81,13 +84,12 @@ try {
         }
     }
     if (empty($dataGet['busca'])) {
-        $input = array('busca' => $dataGet['busca'], 'nome' => $dataGet['nome'], 'phone' => $dataGet['phone']);
+        $input = array('busca' => $dataGet['busca'], 'login' => $dataGet['login'], 'phone' => $dataGet['phone']);
         $count = usuarioBO::getListaCount();
         $paginador = new paginador($dataGet['page'], $count, 20, '', $input);
         $dadosusuarios = usuarioBO::getListaUsuarios($paginador->getPage());
     } else {
-        //$dataGetNome =  htmlspecialchars(addslashes($dataGet['nome']), ENT_NOQUOTES);
-        $input = array('busca' => $dataGet['busca'], 'nome' => $dataGet['nome'], 'phone' => $dataGet['phone']);
+        $input = array('busca' => $dataGet['busca'], 'login' => $dataGet['login'], 'phone' => $dataGet['phone']);
         $count = usuarioBO::getListaCountPesquisa($input);
         $paginador = new paginador($dataGet['page'], $count, 20, '', $input);
         $dadosusuarios = usuarioBO::getListaUsuariosPesquisa($input, $paginador->getPage());
@@ -137,6 +139,9 @@ if (FUNCOES::isAjax()) {
         <script src="assets/bootstrap/js/bootbox.min.js"></script>
         <script src="assets/js/autocomplete.js"></script>
         <link href="assets/css/autocomplete.css" rel="stylesheet">
+<!--        <script src="../js/bootstrap-datepicker.js"></script>
+        <script src="../js/locales/bootstrap-datepicker.pt-BR.js"></script>
+        <link href="../css/datepicker3.css" rel="stylesheet" type="text/css"/>-->
 
         <style>
 
@@ -198,12 +203,12 @@ if (FUNCOES::isAjax()) {
                     <form class="form-inline pull-right noAjax" method="get">
                         <div class="form-group">
                             <select class="form-control" name="busca">
-                                <option value="nome"  <?php if ($dataGet['busca'] == "nome") echo "selected"; ?> >Nome</option>
+                                <option value="login"  <?php if ($dataGet['busca'] == "login") echo "selected"; ?> >Login</option>
                                 <option value="phone" <?php if ($dataGet['busca'] == "phone") echo "selected"; ?> >Whatsapp</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" name="nome"  placeholder="Nome" value="<?= $dataGet['nome'] ?>">
+                            <input type="text" class="form-control" name="login"  placeholder="Login" value="<?= $dataGet['login'] ?>">
                             <input type="text" class="form-control" name="phone"  placeholder="whatsapp" value="<?= $dataGet['phone'] ?>">
                         </div>
                         <button type="submit" class="btn btn-success">
@@ -214,74 +219,70 @@ if (FUNCOES::isAjax()) {
                 <div class="form-group col-sm-2 pull-right" style="">
                     <select class="form-control" name="planos_assinatura_id">
                         <option value="usuario" selected="">Todos</option>
+                        <option value="usuarios_novos">Usuários novos</option>
                         <option value="usuario_atraso">Usuários com atraso</option>
                         <option value="usuario_bloqueados">Usuários bloqueados</option>
                         <option value="usuarios_expirar">Usuários expirados</option>
                     </select>
                 </div>
             </ol>
-                <table class="table table-hover table-striped" >
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Usuário</th>
-                            <th>Whatsapp</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $cont = 1;
-                        if ($dadosusuarios) {
-                            foreach ($dadosusuarios as $dado) {
-                                if ($dado->nome) {
-                                    $descricao = $dado->nome;
-                                } elseif ($dado->login) {
-                                    $descricao = $dado->login;
-                                }
-                                ?>
-                                <tr <?php echo $dado->bloqueado ? 'class=""' : '' ?> >
-                                    <td class="" width='7px'> 
-                                        <input name="selecao" value="<?php echo $dado->id; ?>" type="checkbox">
-                                        <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
-                                    </td>
+            <table class="table table-hover table-striped" >
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Usuário</th>
+                        <th>Whatsapp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $cont = 1;
+                    if ($dadosusuarios) {
+                        foreach ($dadosusuarios as $dado) {
+                            ?>
+                            <tr <?php echo $dado->bloqueado ? 'class=""' : '' ?> >
+                                <td class="" width='7px'> 
+                                    <input name="selecao" value="<?php echo $dado->id; ?>" type="checkbox">
+                                    <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
+                                </td>
         <!--                                <td class="" style="width:10px;"> 
-                                        <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
-                                        <?//= $cont; ?>
-                                    </td>-->
-                                    <td style="width:150px;"><?= $descricao; ?></td>
-                                    <td style="width:100px;">
-                                        <?php if (!$dado->bloqueado) { ?>
-                                            <span class="label label-default"><?= $dado->phone; ?></span>
-                                        <?php } else { ?>
-                                            <span class="label label-danger" style="text-decoration: line-through;"><?= $dado->phone; ?></span>
-                                        <?php } ?>
-                                    </td>
-                                    <td style="width:100px;" class="text-right">
-                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
-                                           href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario">
-                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                        </a>
-                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
-                                           href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
-                                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                                        </a>
-                                        <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
-                                           href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-                                        </a>
-                                          <!--<a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
-                                           href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                        </a>-->
-                                    </td>
-                                </tr>
-                                <?php
-                                $cont++;
-                            }
+                                    <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
+                                    <?//= $cont; ?>
+                                </td>-->
+                                <td style="width:150px;"><?= $dado->login; ?></td>
+                                <td style="width:100px;">
+                                    <?php if (!$dado->bloqueado) { ?>
+                                        <span class="label label-default"><?= $dado->phone; ?></span>
+                                    <?php } else { ?>
+                                        <span class="label label-danger" style="text-decoration: line-through;"><?= $dado->phone; ?></span>
+                                    <?php } ?>
+                                </td>
+                                <td style="width:100px;" class="text-right">
+                                    <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
+                                       href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </a>
+                                    <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
+                                       href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
+                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                                    </a>
+                                    <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
+                                       href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
+                                        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                                    </a>
+                                    <!--<a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
+                                     href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
+                                      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                  </a>-->
+                                </td>
+                            </tr>
+                            <?php
+                            $cont++;
                         }
-                        ?>
-                    </tbody>
-                </table>
+                    }
+                    ?>
+                </tbody>
+            </table>
             <div class="text-center" id="paginador_clientes">
                 <?php
                 echo $paginador->getPagi();
@@ -301,22 +302,28 @@ if (FUNCOES::isAjax()) {
             $('input[name=phone]').hide();
             $('select[name=busca]').change(function () {
                 if (this.value === 'phone') {
-                    $('input[name=nome]').hide();
-                    $('input[name=nome]').val("");
                     $('input[name=phone]').show();
-                } else {
-                    $('input[name=nome]').show();
+                    $('input[name=login]').hide();
+                    $('input[name=login]').val("");
+                } else if (this.value === 'login') {
+                    
+                    $('input[name=login]').show();
                     $('input[name=phone]').hide();
                     $('input[name=phone]').val("");
+                } else {
+                    $('input[name=login]').hide();
+                    $('input[name=phone]').hide();
+                    $('input[name=phone]').val("");
+                    $('input[name=login]').val("");
                 }
             });
         </script>
         <?php if ($dataGet['phone']) { ?>
             <script>
                 $('input[name=phone]').show();
-                $('input[name=nome]').hide();
+                $('input[name=login]').hide();
             </script>
         <?php } ?>
-        <script src="assets/js/usuario.js"></script>
+            <script src="assets/js/usuario.min.js"></script>
     </body>
 </html>
