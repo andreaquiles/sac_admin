@@ -49,7 +49,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default"
                             data-dismiss="modal">
-                        Close
+                        Cancelar
                     </button>
                     <button type="submit" class="btn btn-primary">
                         Salvar

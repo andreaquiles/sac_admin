@@ -84,7 +84,10 @@ $dataPostLimite = filter_input_array(INPUT_POST, $filterLimite);
 
 
 try {
-    if ($dataPostLimite) {
+     if (!$dataGet['page']) {
+            $dataGet['page'] = 1;
+        }
+    if (!empty($dataPostLimite)) {
         $response = array();
         if ($dataPostLimite['data'] == NULL) {
             $response['error'][] = 'Data Inválida!';
@@ -99,15 +102,14 @@ try {
                     usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao');
                 }
                 $response['success'][] = 'Registro alterado com sucesso!';
+                $response['link'] = $_SERVER['PHP_SELF'].'?page=' . $dataGet['page'];
             } catch (Exception $ex) {
                 $response['error'][] = $ex->getMessage();
             }
         }
     } else {
         $count = usuarioDAO::getUsersNovosCount();
-        if (!$dataGet['page']) {
-            $dataGet['page'] = 1;
-        }
+       
         $paginador = new paginador($dataGet['page'], $count, 20, '', array('pesquisa' => $inputGET['pesquisa']));
         $dados_expirar = usuarioDAO::getUsuariosNovos($paginador->getPage());
     }
@@ -121,7 +123,7 @@ try {
                     $result = usuarioBO::deletar($dataGet['id']);
                     if ($result == true) {
                         $response['success'][] = 'Usuário excluído com sucesso!';
-                        $response['link'] = 'usuario.php?page=' . $dataGet['page'];
+                        $response['link'] = 'javascript:history.go(0)';
                     } else {
                         //$response['error'][] = "Revenda já está vinculado a uma cotação !!";
                     }
@@ -166,12 +168,16 @@ if (FUNCOES::isAjax()) {
                 position: relative;
                 width: 100%;
             }
+            .modal-body{
+                max-height: calc(100vh - 200px);
+                overflow-y: auto;
+            }
         </style>
     </head>
     <body>
-        <?php include './modals.php'; ?>
         <?php include 'includes/header_admin.php'; ?>
         <div class="container-fluid">
+            <?php include 'includes/template_modals.php'; ?>
             <div id="alerta">
                 <?php
                 if (isset($response)) {
@@ -199,7 +205,7 @@ if (FUNCOES::isAjax()) {
 
             <ol class="breadcrumb">
                 <li><a href="./">Home</a></li>
-                <li class="active">Usuários expirados</li>
+                <li class="active">Usuários novos</li>
             </ol>
             <ol class="breadcrumb" >
                 <a  href="usuarios_editar.php" role="button" class="btn btn-primary"> <span class="glyphicon glyphicon-plus-sign"></span>
@@ -256,15 +262,15 @@ if (FUNCOES::isAjax()) {
                                            href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
                                             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                                         </a>
-<!--                                        <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
-                                           href="config.php?user_id=<?//= $dado->id; ?>&page=<?//= $dataGet['page']; ?>">
-                                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-                                        </a>-->
+                                        <!--                                        <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
+                                                                                   href="config.php?user_id=<?//= $dado->id; ?>&page=<?//= $dataGet['page']; ?>">
+                                                                                    <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                                                                                </a>-->
                                         <button class="btn btn-primary btn-xs"
                                                 data-rel="tooltip"
                                                 onclick="EditarExp('<?= $dado->id; ?>')"
                                                 data-placement="bottom"
-                                                title="Adicionar novo contato"
+                                                title="configurações"
                                                 href="#myModal" data-toggle="modal"
                                                 >
                                             <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>

@@ -208,8 +208,8 @@ if (FUNCOES::isAjax()) {
                             </select>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" name="login"  placeholder="Login" value="<?= $dataGet['login'] ?>">
-                            <input type="text" class="form-control" name="phone"  placeholder="whatsapp" value="<?= $dataGet['phone'] ?>">
+                            <input type="text" class="form-control" name="login"  placeholder="" value="<?= $dataGet['login'] ?>">
+                            <input type="text" class="form-control" name="phone"  placeholder="" value="<?= $dataGet['phone'] ?>">
                         </div>
                         <button type="submit" class="btn btn-success">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>  Pesquisar
