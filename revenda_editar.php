@@ -70,6 +70,9 @@ $filterPOST = array(
     'revenda_id' => array(
         'filter' => FILTER_VALIDATE_INT
     ),
+    'bloqueado' => array(
+        'filter' => FILTER_VALIDATE_INT
+    ),
     'page' => array(
         'filter' => FILTER_VALIDATE_INT
     )
@@ -563,9 +566,20 @@ if (FUNCOES::isAjax()) {
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="text-right">
+                                        <div class="form-group" style="margin-top:1.2em;">
+                                            <div class="checkbox pull-left">
+                                                <label>
+                                                    <input type="checkbox" value="1"  name="bloqueado" <?= $data['bloqueado'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-danger">Bloqueado</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="text-right">
                             <a href="<?php echo ''; ?>" class="btn btn-danger">Cancelar</a>

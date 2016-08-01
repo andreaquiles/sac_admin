@@ -59,3 +59,32 @@
         </div>
     </div>
 </div>
+
+ <div class="modal fade LoginSignup" id="myModalxx" tabindex="-1" role="dialog"
+    aria-labelledby="LoginLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 class="modal-title">Login</h3>
+          </div>
+          <div class="modal-body">
+            <form method="post" action="https://www.yourwebsite.com/client/dologin.php">
+              <div class="form-group">
+                <input class="form-control input-lg" type="text" name="username" size="50"
+                placeholder="Email ID">
+              </div>
+              <div class="form-group">
+                <input class="form-control input-lg" type="password" name="password" size="20"
+                placeholder="Password">
+              </div>
+              <div class="form-group">
+                <input type="submit" value="Login to my Account" class="btn btn-success btn-lg">
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>

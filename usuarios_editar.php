@@ -611,13 +611,7 @@ if (FUNCOES::isAjax()) {
                                     <label for="data_vencimento">Vencimento</label>
                                     <input type="text" data-toggle="datepicker" class="form-control" name="data_vencimento" value="<?= $data['data_vencimento'] ?>" >
                                 </div>
-                                <!--                                <div class="form-group col-sm-6" style="margin-top:1.2em;">
-                                                                    <div class="checkbox pull-right">
-                                                                        <label>
-                                                                            <input type="checkbox" value="1" name="bloqueado" <?= $data['bloqueado'] ? "checked" : "" ?>><span style="" class="label label-danger">Bloquear</span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>-->
+                               
                             </div>
                             <div class="panel panel-default">
                                 <h4 class="panel-title" style="padding: 4px;">

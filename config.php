@@ -251,7 +251,10 @@ if (FUNCOES::isAjax()) {
                             <div class="well">
                                 <h3><?= $dado->login; ?></h3>
                                 <form class="" method='POST' action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
-                                    <div class="well">
+                                    <input type=hidden name="user_id" value="<?= $dataGet['user_id']; ?>">
+                                    <input type=hidden name="expirar" value="<?= $dataGet['expirar']; ?>">
+                                    <input type=hidden name="page" value="<?= $dataGet['page']; ?>">
+<!--                                    <div class="well">
                                         <label class="control-label" for="inputPassword">Revenda de Clientes</label>
                                         <div class="controls">
                                             <label class="radio inline">
@@ -263,40 +266,38 @@ if (FUNCOES::isAjax()) {
                                                 Desbloquear
                                             </label>
                                         </div>
-                                    </div>
-                                    <div class="well">
-                                        <label class="control-label" for="inputPassword">Uso de auto respostas</label>
+                                    </div>-->
+                                    <!--                                    <div class="well">
+                                                                            <label class="control-label" for="inputPassword">Uso de auto respostas</label>
+                                                                            <div class="controls">
+                                                                                <label class="radio inline">
+                                                                                    <input type="radio" name="uso_auto_respostas" id="optionsRadios1" value="0" <?php echo $dado->uso_auto_respostas ? '' : 'checked'; ?>>
+                                                                                    Bloquear
+                                                                                </label>
+                                                                                <label class="radio inline">
+                                                                                    <input type="radio" name="uso_auto_respostas" id="optionsRadios2" value="1" <?php echo $dado->uso_auto_respostas ? 'checked' : ''; ?>>
+                                                                                    Desbloquear
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>-->
+<!--                                    <div class="well">
+                                                                                <label class="control-label" for="inputPassword">Usar respostas em lote</label>
                                         <div class="controls">
-                                            <label class="radio inline">
-                                                <input type="radio" name="uso_auto_respostas" id="optionsRadios1" value="0" <?php echo $dado->uso_auto_respostas ? '' : 'checked'; ?>>
-                                                Bloquear
-                                            </label>
-                                            <label class="radio inline">
-                                                <input type="radio" name="uso_auto_respostas" id="optionsRadios2" value="1" <?php echo $dado->uso_auto_respostas ? 'checked' : ''; ?>>
-                                                Desbloquear
-                                            </label>
+                                                                                        <label class="radio inline">
+                                                                                            <input type="radio" name="uso_respostas_lote" id="optionsRadios1" value="0" <?php echo $dado->uso_respostas_lote ? '' : 'checked'; ?>>
+                                                                                            Bloquear
+                                                                                        </label>
+                                                                                        <label class="radio inline">
+                                                                                            <input type="radio" name="uso_respostas_lote" id="optionsRadios2" value="1" <?php //  echo $dado->uso_respostas_lote ? 'checked' : '';   ?>>
+
+
+                                                                                        </label>
                                         </div>
-                                    </div>
-                                    <div class="well">
-                                        <label class="control-label" for="inputPassword">Usar respostas em lote</label>
-                                        <div class="controls">
-                                            <label class="radio inline">
-                                                <input type="radio" name="uso_respostas_lote" id="optionsRadios1" value="0" <?php echo $dado->uso_respostas_lote ? '' : 'checked'; ?>>
-                                                Bloquear
-                                            </label>
-                                            <label class="radio inline">
-                                                <input type="radio" name="uso_respostas_lote" id="optionsRadios2" value="1" <?php echo $dado->uso_respostas_lote ? 'checked' : ''; ?>>
-                                                <input type=hidden name="user_id" value="<?= $dataGet['user_id']; ?>">
-                                                <input type=hidden name="expirar" value="<?= $dataGet['expirar']; ?>">
-                                                Desbloquear
-                                            </label>
-                                            <input type=hidden name="page" value="<?= $dataGet['page']; ?>">
-                                        </div>
-                                    </div>
+                                    </div>-->
                                     <div class="form-inline">
                                         <div class="row-fluid">
                                             <fieldset>
-                                                <legend>Expirações</legend>
+<!--                                                <legend>Expirações</legend>-->
                                                 <div class="span2">
                                                     <label>Nº auto respostas</label>
                                                     <div class="controls">

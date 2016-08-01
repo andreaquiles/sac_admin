@@ -182,13 +182,20 @@ if (FUNCOES::isAjax()) {
                                     $descricao = $dado->razao;
                                 }
                                 ?>
-                                <tr <?php //echo $dado['data_encerramento'] ? 'class="danger"' : ''    ?> >
+                                <tr <?php //echo $dado['data_encerramento'] ? 'class="danger"' : ''     ?> >
                                     <td class="" style="width:10px;"> 
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
                                     <td style="width:150px;"><?= $descricao; ?></td>
-                                    <td style="width:100px;"><span class="label label-default"><?= $dado->email; ?></span></td>
+                                    <td style="width:100px;">
+                                        <?php if (!$dado->bloqueado) { ?>
+                                            <span class="label label-default"><?= $dado->email; ?></span>
+                                        <?php } else { ?>
+                                            <span class="label label-danger" style="text-decoration: line-through;"><?= $dado->email; ?></span>
+                                        <?php } ?>
+
+                                    </td>
                                     <td style="width:65px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
                                            href="revenda_editar.php?revenda_id=<?= $dado->revenda_id; ?>&page=<?= $dataGet['page']; ?>">

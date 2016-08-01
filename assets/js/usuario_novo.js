@@ -1,3 +1,7 @@
+NumeroInteiros('limite_auto_resposta');
+NumeroInteiros('dias_auto_resposta');
+NumeroInteiros('limite_atendentes');
+NumeroInteiros('dias_login');
 EditarExp = function (user_id) {
     $.ajax({
         type: "POST",
