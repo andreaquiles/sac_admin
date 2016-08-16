@@ -25,6 +25,8 @@ jQuery(function () {
      */
     NumeroInteiros('qtde_autorespostas');
     NumeroInteiros('qtde_atendentes');
+    NumeroInteiros('qtde_contatos');
+    NumeroInteiros('qtde_msg_mes');
     
    
 

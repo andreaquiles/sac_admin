@@ -218,7 +218,7 @@ try {
 //        } 
         else if ($datauser['passwlogin'] == NULL) {
             $response['error'][] = 'Preencher senha corretamanete (mínimo 5 caracteres)';
-        } 
+        }
 //        else if ($data['planos_assinatura_id'] == NULL) {
 //            $response['error'][] = 'Preencher plano de assinatura';
 //        } 
@@ -227,8 +227,7 @@ try {
 //        }
         else if ($datauser['phone'] == NULL) {
             $response['error'][] = 'Preencher whatsapp';
-        }
-        else if ($data['tpPessoa'] == NULL) {
+        } else if ($data['tpPessoa'] == NULL) {
             $response['error'][] = 'Pessoa Tipo Inválido!';
         } else if (!empty($data_org['cpf']) && $data['cpf'] == NULL) {
             $response['error'][] = 'CPF Inválido!';
@@ -264,7 +263,7 @@ try {
             if (isset($_SESSION['revenda_id'])) {
                 unset($datauser['bloqueado']);
             }
-             if (isset($_SESSION['revenda_id'])) {
+            if (isset($_SESSION['revenda_id'])) {
                 unset($datauser['modulo_fatura']);
             }
             $data_financeiro['data_vencimento'] = FUNCOES::formatarDatatoMYSQL($data_financeiro['data_vencimento']);
@@ -301,7 +300,7 @@ try {
                      * UPDATE USUÁRIO F
                      */
                     $response['error'][] = 'CPF do Usuário já cadastrado !!!';
-                }  elseif (!empty($datauser['id']) && !empty($data['cpf']) && usuarioBO::checkPhoneDiff($datauser['phone'], $datauser['id'])) {
+                } elseif (!empty($datauser['id']) && !empty($data['cpf']) && usuarioBO::checkPhoneDiff($datauser['phone'], $datauser['id'])) {
                     /**
                      * UPDATE USUÁRIO F
                      */
@@ -611,7 +610,6 @@ if (FUNCOES::isAjax()) {
                                     <label for="data_vencimento">Vencimento</label>
                                     <input type="text" data-toggle="datepicker" class="form-control" name="data_vencimento" value="<?= $data['data_vencimento'] ?>" >
                                 </div>
-                               
                             </div>
                             <div class="panel panel-default">
                                 <h4 class="panel-title" style="padding: 4px;">
@@ -749,6 +747,7 @@ if (FUNCOES::isAjax()) {
                                                         </div>
                                                     </div>
                                                 </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -792,15 +791,15 @@ if (FUNCOES::isAjax()) {
                                         </label>
                                     </div>
                                 </div>
-                            
-                               <div class="form-group" style="margin-top:1.2em;">
+
+                                <div class="form-group" style="margin-top:1.2em;">
                                     <div class="checkbox pull-left">
                                         <label style="margin-left:1.2em;">
                                             <input type="checkbox" value="1"  name="modulo_fatura" <?= $data['modulo_fatura'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-success">Módulo fatura</span>
                                         </label>
                                     </div>
                                 </div>
-                            
+
                             <?php } ?>
                             <a href="<?php echo ''; ?>" class="btn btn-danger">Cancelar</a>
                             <button type="submit" class="btn btn-success">Salvar</button>

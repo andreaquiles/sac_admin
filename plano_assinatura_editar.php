@@ -31,6 +31,12 @@ $filter = array(
     'qtde_atendentes' => array(
         'filter' => FILTER_VALIDATE_INT
     ),
+    'qtde_contatos' => array(
+        'filter' => FILTER_VALIDATE_INT
+    ),
+    'qtde_msg_mes' => array(
+        'filter' => FILTER_VALIDATE_INT
+    ),
     'valor' => array(
         'filter' => FILTER_SANITIZE_STRING
     ),
@@ -198,19 +204,27 @@ if (FUNCOES::isAjax()) {
                                 <input type="hidden" name="page" value="<?php echo $dataGet['page']; ?>">
                             </div>
                             <div class="row">
-                                <div class="form-group col-sm-3">
+                                <div class="form-group col-sm-2">
                                     <label for="razao_social">Qtde. auto respostas</label>
                                     <input type="text" class="form-control" name="qtde_autorespostas" placeholder="" value="<?php echo $data['qtde_autorespostas']; ?>" >
                                 </div>
-                                <div class="form-group col-sm-3">
+                                <div class="form-group col-sm-2">
                                     <label for="razao_social">Qtde. atendentes</label>
                                     <input type="text" class="form-control" name="qtde_atendentes" placeholder="" value="<?php echo $data['qtde_atendentes']; ?>" >
                                 </div>
-                                <div class="form-group col-sm-3">
+                                 <div class="form-group col-sm-2">
+                                    <label for="razao_social">Qtde. contatos</label>
+                                    <input type="text" class="form-control" name="qtde_contatos" placeholder="" value="<?php echo $data['qtde_contatos']; ?>" >
+                                </div>
+                                 <div class="form-group col-sm-2">
+                                    <label for="razao_social">Qtde. mensagens mês</label>
+                                    <input type="text" class="form-control" name="qtde_msg_mes" placeholder="" value="<?php echo $data['qtde_msg_mes']; ?>" >
+                                </div>
+                                <div class="form-group col-sm-2">
                                     <label for="cnpj">Valor R$</label>
                                     <input type="text" class="form-control" name="valor" data-toggle="maskMoney"  value="<?php echo $data['valor']; ?>" >
                                 </div>
-                                <div class="form-group col-sm-3">
+                                <div class="form-group col-sm-2">
                                     <label for="razao_social">% Repassado ao ADMIN</label>
                                     <input type="text" class="form-control numeric" name="percentual_admin"  value="<?php echo $data['percentual_admin']; ?>" >
                                 </div>

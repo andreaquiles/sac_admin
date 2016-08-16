@@ -108,10 +108,9 @@ try {
             }
         }
     } else {
-        $count = usuarioDAO::getUsersNovosCount();
-       
+        $count = usuarioBO::getExpirarNovosCount();
         $paginador = new paginador($dataGet['page'], $count, 20, '', array('pesquisa' => $inputGET['pesquisa']));
-        $dados_expirar = usuarioDAO::getUsuariosNovos($paginador->getPage());
+        $dados_novos = usuarioBO::getUsuariosNovos($paginador->getPage());
     }
     /**
      * action via post EXCLUIR
@@ -238,8 +237,8 @@ if (FUNCOES::isAjax()) {
                         <?php
                         $cont = 1;
                         $dtAtual = date("Y-m-d");
-                        if ($dados_expirar) {
-                            foreach ($dados_expirar as $dado) {
+                        if ($dados_novos) {
+                            foreach ($dados_novos as $dado) {
                                 ?>
                                 <tr  <?php echo ($dado->DiffDate < 0 ) ? 'class="danger"' : '' ?> >
                                     <td class="" style="width:10px;"> 
