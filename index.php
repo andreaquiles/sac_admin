@@ -118,7 +118,6 @@ if (FUNCOES::isAjax()) {
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
         <title><?= TITLE; ?></title>
         <link rel="shortcut icon" href="./favicon.ico">
         <meta name="description" content="overview &amp; stats" />

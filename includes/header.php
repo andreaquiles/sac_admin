@@ -18,11 +18,11 @@
                         <li>
                             <?php if (isset($_SESSION['admin_id'])) { ?>
                                 <a href="<?= "./revenda.php" ?>"><?= MENU_REVENDAS ?></a>
-                                <a href="<?= "./usuario.php" ?>"><?= MENU_USUARIOS ?></a>
+                                <a href="<?= "./usuario.php" ?>"><?= 'Usuários' ?></a>
                                 <a href="<?= "./plano_assinatura.php" ?>"><?= MENU_PLANO_ASSINATURA ?></a>
                                 <a href="<?= "./financeiro.php" ?>"><?= MENU_FINANCEIRO ?></a>
                             <?php } elseif (isset($_SESSION['revenda_id'])) { ?>
-                                <a href="<?= "./usuario.php" ?>"><?= MENU_USUARIOS ?></a>
+                                <a href="<?= "./usuario.php" ?>"><?= 'Usuários' ?></a>
                                 <a href="<?= "./plano_assinatura.php" ?>"><?= MENU_PLANO_ASSINATURA ?></a>
                                 <a href="<?= "./financeiro.php" ?>"><?= MENU_FINANCEIRO ?></a>
                             <?php } ?>

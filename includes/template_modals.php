@@ -13,34 +13,34 @@
                     Modal Expirações
                 </h4>
             </div>
-            <form role="form" method="post">
+            <form name="formexpiracoes" role="form" method="post">
                 <!-- Modal Body -->
                 <div class="modal-body">
-                    <input type="hidden" name="user_id" />
+                    <input type="hidden" name="user_id" class="user_id" />
                     <div class="form-group" >
                         <label for="exampleInputEmail1">Número Autorespostas</label>
                         <input type="text" name="limite_auto_resposta" 
-                               class="form-control" 
+                               class="form-control limite_auto_resposta" 
                                id="exampleInputEmail1" placeholder=""/>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Dias Autorespostas</label>
-                        <input type="text" class="form-control" name="dias_auto_resposta" 
+                        <input type="text" class="form-control dias_auto_resposta" name="dias_auto_resposta" 
                                id="exampleInputPassword1" placeholder=""/>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Número Atendentes</label>
-                        <input type="text" name="limite_atendentes"  class="form-control"
+                        <input type="text" name="limite_atendentes"  class="form-control limite_atendentes"
                                id="exampleInputEmail1" placeholder=""/>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Data</label>
-                        <input type="text" name="data" data-toggle="datepicker"  class="form-control"
+                        <input type="text" name="data" data-toggle="datepicker"  class="form-control date"
                                id="exampleInputPassword1" placeholder=""/>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Dias de login</label>
-                        <input type="text" name="dias_login"  class="form-control"
+                        <input type="text" name="dias_login"  class="form-control dias_login"
                                id="exampleInputEmail1" placeholder=""/>
                     </div>
                 </div>

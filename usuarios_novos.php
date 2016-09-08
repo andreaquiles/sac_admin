@@ -267,7 +267,7 @@ if (FUNCOES::isAjax()) {
                                                                                 </a>-->
                                         <button class="btn btn-primary btn-xs"
                                                 data-rel="tooltip"
-                                                onclick="EditarExp('<?= $dado->id; ?>')"
+                                                onclick="EditarExp('<?= $dado->id; ?>','formexpiracoes')"
                                                 data-placement="bottom"
                                                 title="configurações"
                                                 href="#myModal" data-toggle="modal"

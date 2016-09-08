@@ -49,11 +49,11 @@
                     <ul class="dropdown-menu">
                         <?php if (isset($_SESSION['admin_id'])) { ?>
                             <li><a href="revenda.php"><?= MENU_REVENDAS ?></a></li>
-                            <li><a href="usuario.php"><?= MENU_USUARIOS ?></a></li>
+                            <li><a href="usuario.php"><?= 'Usuários' ?></a></li>
                             <li><a href="plano_assinatura.php"><?= MENU_PLANO_ASSINATURA ?></a></li>
                             <li><a href="financeiro.php"><?= MENU_FINANCEIRO ?></a></li>
                         <?php } elseif (isset($_SESSION['revenda_id'])) { ?>
-                            <li><a href="usuario.php"><?= MENU_USUARIOS ?></a></li>
+                            <li><a href="usuario.php"><?= 'Usuários' ?></a></li>
                             <li><a href="plano_assinatura.php"><?= MENU_PLANO_ASSINATURA ?></a></li>
                             <li><a href="financeiro.php"><?= MENU_FINANCEIRO ?></a></li>
                         <?php } ?>
