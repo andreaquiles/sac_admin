@@ -118,6 +118,9 @@ $filterPostUser = array(
     ),
     'modulo_fatura' => array(
         'filter' => FILTER_VALIDATE_INT
+    ),
+    'modulo_produtos' => array(
+        'filter' => FILTER_VALIDATE_INT
     )
 );
 
@@ -169,6 +172,19 @@ $filterPostEndereco = array(
 );
 
 
+$filterTelegram = array(
+    'descricao' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'bot_token' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'users_bots_id' => array(
+        'filter' => FILTER_VALIDATE_INT
+    )
+);
+
+
 $filterGET = array(
     'action' => array(
         'filter' => FILTER_VALIDATE_REGEXP,
@@ -179,7 +195,8 @@ $filterGET = array(
     ),
     'id' => array(
         'filter' => FILTER_VALIDATE_INT
-    ),
+    )
+    ,
     'pgname' => array(
         'filter' => FILTER_SANITIZE_STRING
     )
@@ -197,9 +214,9 @@ $datauser = filter_input_array(INPUT_POST, $filterPostUser);
 $data = filter_input_array(INPUT_POST, $filterPostUserInfo);
 $data_endereco = filter_input_array(INPUT_POST, $filterPostEndereco);
 $data_financeiro = filter_input_array(INPUT_POST, $filterFinanceiro);
+$data_telegram = filter_input_array(INPUT_POST, $filterTelegram);
 $dataGet = filter_input_array(INPUT_GET, $filterGET);
-
-
+//print_r($dataGet);
 //
 try {
     $revendas = revendedorBO::getRevendas(1000);
@@ -265,6 +282,7 @@ try {
             }
             if (isset($_SESSION['revenda_id'])) {
                 unset($datauser['modulo_fatura']);
+                unset($datauser['modulo_produtos']);
             }
             $data_financeiro['data_vencimento'] = FUNCOES::formatarDatatoMYSQL($data_financeiro['data_vencimento']);
             unset($data['page']);
@@ -452,6 +470,18 @@ try {
             $response['error'][] = $err->getMessage();
         }
     }
+    /**
+     * BOT TELEGRAM   ---- 255747822:AAFM7ZzxOeHbSRTn2_EapG4wCdIrQ-8dmQM
+     */  
+    if ($data_telegram['bot_token'] && empty($response['error'])) {
+        if (empty($data_telegram['users_bots_id'])) {
+            $data_telegram['users_id'] = $datauser['id'];
+            $data_telegram['canal'] ="telegram";
+            usuarioBO::salvarUsuario($data_telegram, 'users_bots');
+        } else {
+            usuarioBO::salvarUsuario($data_telegram, 'users_bots',$data_telegram['users_bots_id']);
+        }
+    }
 } catch (Exception $ex) {
     $response['error'][] = $ex->getMessage();
 }
@@ -611,20 +641,54 @@ if (FUNCOES::isAjax()) {
                                     <input type="text" data-toggle="datepicker" class="form-control" name="data_vencimento" value="<?= $data['data_vencimento'] ?>" >
                                 </div>
                             </div>
+
+
+                            <div class="panel panel-default">
+                                <h4 class="panel-title" style="padding: 4px;">
+                                    <span class="glyphicon glyphicon-info-sign"> </span> Whatsapp 
+                                </h4>
+                                <div class="panel-body">
+                                    <div class="form-group col-sm-2">
+                                        <label for="razao_social">Whatsapp</label>
+                                        <input type="text" class="form-control" name="phone" placeholder="" value="<?php echo $data['phone']; ?>">
+                                    </div>
+                                    <div class="form-group col-sm-10">
+                                        <label for="razao_social">Hash</label>
+                                        <input type="text" class="form-control" name="password" placeholder="" value="<?php echo $data['password']; ?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <h4 class="panel-title" style="padding: 4px;">
+                                    <span class="glyphicon glyphicon-info-sign"> </span> Telegram 
+                                </h4>
+                                <div class="panel-body">
+                                    <div class="form-group col-sm-5">
+                                        <label for="razao_social">Bot</label>
+                                        <input type="hidden"  name="users_bots_id" value="<?php echo $data['users_bots_id']; ?>">
+                                        <input type="text" class="form-control" name="descricao" placeholder="" value="<?php echo $data['descricao']; ?>">
+                                    </div>
+                                    <div class="form-group col-sm-7">
+                                        <label for="razao_social">Token</label>
+                                        <input type="text" class="form-control" name="bot_token" placeholder="" value="<?php echo $data['bot_token']; ?>">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="panel panel-default">
                                 <h4 class="panel-title" style="padding: 4px;">
                                     <span class="glyphicon glyphicon-info-sign"> </span> Endereço 
                                 </h4>
                                 <div class="panel-body">
-                                    <div class="form-group col-sm-6">
+                                    <div class="form-group col-sm-5">
                                         <label for="razao_social">Rua</label>
                                         <input type="text" class="form-control" name="rua" placeholder="" value="<?php echo $endereco['rua']; ?>">
                                     </div>
-                                    <div class="form-group col-sm-2">
+                                    <div class="form-group col-sm-1">
                                         <label for="razao_social">Número</label>
                                         <input type="text" class="form-control" name="numero" placeholder="" value="<?php echo $endereco['numero']; ?>">
                                     </div>
-                                    <div class="form-group col-sm-4">
+                                    <div class="form-group col-sm-2">
                                         <label for="razao_social">Complemento</label>
                                         <input type="text" class="form-control" name="complemento" placeholder="" value="<?php echo $endereco['complemento']; ?>">
                                     </div>
@@ -644,6 +708,7 @@ if (FUNCOES::isAjax()) {
                                         <label for="razao_social">Cep</label>
                                         <input type="text" class="form-control" name="cep" placeholder="" value="<?php echo $endereco['cep']; ?>">
                                     </div>
+
                                     <div class="form-group col-sm-2">
                                         <label for="razao_social">Telefone fixo</label>
                                         <input type="text" class="form-control" name="tel_fixo" placeholder="" value="<?php echo $endereco['tel_fixo']; ?>">
@@ -652,16 +717,13 @@ if (FUNCOES::isAjax()) {
                                         <label for="razao_social">Celular</label>
                                         <input type="text" class="form-control" name="celular" placeholder="" value="<?php echo $endereco['celular']; ?>">
                                     </div>
-                                    <div class="form-group col-sm-2">
-                                        <label for="razao_social">Whatsapp</label>
-                                        <input type="text" class="form-control" name="phone" placeholder="" value="<?php echo $data['phone']; ?>">
-                                    </div>
-                                    <div class="form-group col-sm-6">
-                                        <label for="razao_social">Hash</label>
-                                        <input type="text" class="form-control" name="password" placeholder="" value="<?php echo $data['password']; ?>">
-                                    </div>
+
+
                                 </div>
                             </div>
+
+
+
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="panel panel-default">
                                     <div class="panel-heading" role="tab" id="headingOne">
@@ -747,7 +809,7 @@ if (FUNCOES::isAjax()) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -796,6 +858,14 @@ if (FUNCOES::isAjax()) {
                                     <div class="checkbox pull-left">
                                         <label style="margin-left:1.2em;">
                                             <input type="checkbox" value="1"  name="modulo_fatura" <?= $data['modulo_fatura'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-success">Módulo fatura</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            
+                             <div class="form-group" style="margin-top:1.2em;">
+                                    <div class="checkbox pull-left">
+                                        <label style="margin-left:1.2em;">
+                                            <input type="checkbox" value="1"  name="modulo_produtos" <?= $data['modulo_produtos'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-success">Módulo produtos</span>
                                         </label>
                                     </div>
                                 </div>
