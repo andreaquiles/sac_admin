@@ -36,12 +36,12 @@
                     <div class="form-group">
                         <label for="exampleInputPassword1">Data</label>
                         <input type="text" name="data" data-toggle="datepicker"  class="form-control date"
-                               id="exampleInputPassword1" placeholder=""/>
+                               id="exampleInputPassword1" placeholder="" <?= !empty($_SESSION["sessiontimerevenda"])  ? ' disabled': ''; ?>/>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Dias de login</label>
                         <input type="text" name="dias_login"  class="form-control dias_login"
-                               id="exampleInputEmail1" placeholder=""/>
+                               id="exampleInputEmail1" placeholder="" <?= !empty($_SESSION["sessiontimerevenda"])  ? ' disabled': ''; ?> />
                     </div>
                 </div>
 

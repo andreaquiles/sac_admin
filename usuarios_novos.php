@@ -84,17 +84,22 @@ $dataPostLimite = filter_input_array(INPUT_POST, $filterLimite);
 
 
 try {
-     if (!$dataGet['page']) {
-            $dataGet['page'] = 1;
-        }
+    if (!$dataGet['page']) {
+        $dataGet['page'] = 1;
+    }
     if (!empty($dataPostLimite)) {
         $response = array();
-        if ($dataPostLimite['data'] == NULL) {
+        if ($dataPostLimite['data'] == NULL && empty($_SESSION["sessiontimerevenda"]) ) {
             $response['error'][] = 'Data Inválida!';
         }
         if (empty($response['error'])) {
             try {
-                $dataPostLimite['data'] = FUNCOES::formatarDatatoMYSQL($dataPostLimite['data']) . ' ' . date('H:i:s');
+                if (empty($_SESSION["sessiontimerevenda"])) {
+                    $dataPostLimite['data'] = FUNCOES::formatarDatatoMYSQL($dataPostLimite['data']) . ' ' . date('H:i:s');
+                } else {
+                    unset($dataPostLimite['data']);
+                    unset($dataPostLimite['dias_login']);
+                }
                 $rowGetExpiracao = usuario_expiracaoBO::getExpiracaoEspecifica($dataPostLimite['user_id']);
                 if ($rowGetExpiracao->users_expiracao_id) {
                     usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao', $dataPostLimite['user_id']);
@@ -102,7 +107,7 @@ try {
                     usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao');
                 }
                 $response['success'][] = 'Registro alterado com sucesso!';
-                $response['link'] = $_SERVER['PHP_SELF'].'?page=' . $dataGet['page'];
+                $response['link'] = $_SERVER['PHP_SELF'] . '?page=' . $dataGet['page'];
             } catch (Exception $ex) {
                 $response['error'][] = $ex->getMessage();
             }
@@ -270,7 +275,7 @@ if (FUNCOES::isAjax()) {
                                                                                 </a>-->
                                         <button class="btn btn-primary btn-xs"
                                                 data-rel="tooltip"
-                                                onclick="EditarExp('<?= $dado->id; ?>','formexpiracoes')"
+                                                onclick="EditarExp('<?= $dado->id; ?>', 'formexpiracoes')"
                                                 data-placement="bottom"
                                                 title="configurações"
                                                 href="#myModal" data-toggle="modal"
@@ -306,9 +311,9 @@ if (FUNCOES::isAjax()) {
         <script src="assets/js/gerenciador.min.js"></script>
         <script src="assets/js/usuario_novo.min.js"></script>
         <script>
-        $('select[name=planos_assinatura_id]').change(function () {
-            location.href = this.value + '.php';
-        });
+                                                    $('select[name=planos_assinatura_id]').change(function () {
+                                                        location.href = this.value + '.php';
+                                                    });
         </script>
     </body>
 </html>

@@ -88,12 +88,17 @@ if ($dataPost) {
     try {
         if ($dataPostLimite) {
             $response = array();
-            if ($dataPostLimite['data'] == NULL) {
+            if ($dataPostLimite['data'] == NULL && empty($_SESSION["sessiontimerevenda"])) {
                 $response['error'][] = 'Data Inválida!';
             }
             if (empty($response['error'])) {
                 try {
-                    $dataPostLimite['data'] = FUNCOES::formatarDatatoMYSQL($dataPostLimite['data']) . ' ' . date('H:i:s');
+                    if (empty($_SESSION["sessiontimerevenda"])) {
+                        $dataPostLimite['data'] = FUNCOES::formatarDatatoMYSQL($dataPostLimite['data']) . ' ' . date('H:i:s');
+                    } else {
+                        unset($dataPostLimite['data']);
+                        unset($dataPostLimite['dias_login']);
+                    }
                     $rowGetExpiracao = usuario_expiracaoBO::getExpiracaoEspecifica($dataPostLimite['user_id']);
                     if ($rowGetExpiracao->users_expiracao_id) {
                         usuario_expiracaoBO::salvarExpiracao($dataPostLimite, 'users_expiracao', $dataPostLimite['user_id']);
@@ -254,19 +259,19 @@ if (FUNCOES::isAjax()) {
                                     <input type=hidden name="user_id" value="<?= $dataGet['user_id']; ?>">
                                     <input type=hidden name="expirar" value="<?= $dataGet['expirar']; ?>">
                                     <input type=hidden name="page" value="<?= $dataGet['page']; ?>">
-<!--                                    <div class="well">
-                                        <label class="control-label" for="inputPassword">Revenda de Clientes</label>
-                                        <div class="controls">
-                                            <label class="radio inline">
-                                                <input type="radio" name="revenda_clientes" id="optionsRadios1" value="0" <?php echo $dado->revenda_clientes ? '' : 'checked'; ?>>
-                                                Bloquear
-                                            </label>
-                                            <label class="radio inline">
-                                                <input type="radio" name="revenda_clientes" id="optionsRadios2" value="1" <?php echo $dado->revenda_clientes ? 'checked' : ''; ?>>
-                                                Desbloquear
-                                            </label>
-                                        </div>
-                                    </div>-->
+                                    <!--                                    <div class="well">
+                                                                            <label class="control-label" for="inputPassword">Revenda de Clientes</label>
+                                                                            <div class="controls">
+                                                                                <label class="radio inline">
+                                                                                    <input type="radio" name="revenda_clientes" id="optionsRadios1" value="0" <?php echo $dado->revenda_clientes ? '' : 'checked'; ?>>
+                                                                                    Bloquear
+                                                                                </label>
+                                                                                <label class="radio inline">
+                                                                                    <input type="radio" name="revenda_clientes" id="optionsRadios2" value="1" <?php echo $dado->revenda_clientes ? 'checked' : ''; ?>>
+                                                                                    Desbloquear
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>-->
                                     <!--                                    <div class="well">
                                                                             <label class="control-label" for="inputPassword">Uso de auto respostas</label>
                                                                             <div class="controls">
@@ -280,24 +285,24 @@ if (FUNCOES::isAjax()) {
                                                                                 </label>
                                                                             </div>
                                                                         </div>-->
-<!--                                    <div class="well">
-                                                                                <label class="control-label" for="inputPassword">Usar respostas em lote</label>
-                                        <div class="controls">
-                                                                                        <label class="radio inline">
-                                                                                            <input type="radio" name="uso_respostas_lote" id="optionsRadios1" value="0" <?php echo $dado->uso_respostas_lote ? '' : 'checked'; ?>>
-                                                                                            Bloquear
-                                                                                        </label>
-                                                                                        <label class="radio inline">
-                                                                                            <input type="radio" name="uso_respostas_lote" id="optionsRadios2" value="1" <?php //  echo $dado->uso_respostas_lote ? 'checked' : '';   ?>>
-
-
-                                                                                        </label>
-                                        </div>
-                                    </div>-->
+                                    <!--                                    <div class="well">
+                                                                                                                    <label class="control-label" for="inputPassword">Usar respostas em lote</label>
+                                                                            <div class="controls">
+                                                                                                                            <label class="radio inline">
+                                                                                                                                <input type="radio" name="uso_respostas_lote" id="optionsRadios1" value="0" <?php echo $dado->uso_respostas_lote ? '' : 'checked'; ?>>
+                                                                                                                                Bloquear
+                                                                                                                            </label>
+                                                                                                                            <label class="radio inline">
+                                                                                                                                <input type="radio" name="uso_respostas_lote" id="optionsRadios2" value="1" <?php //  echo $dado->uso_respostas_lote ? 'checked' : '';       ?>>
+                                    
+                                    
+                                                                                                                            </label>
+                                                                            </div>
+                                                                        </div>-->
                                     <div class="form-inline">
                                         <div class="row-fluid">
                                             <fieldset>
-<!--                                                <legend>Expirações</legend>-->
+                                                <!--                                                <legend>Expirações</legend>-->
                                                 <div class="span2">
                                                     <label>Nº auto respostas</label>
                                                     <div class="controls">
@@ -319,13 +324,13 @@ if (FUNCOES::isAjax()) {
                                                 <div class="span2">
                                                     <label>Data</label>
                                                     <div class="controls">
-                                                        <input type="text" data-toggle="datepicker" class="selector form-control input-block-level" name="data" value="<?= $dado->date; ?>" >
+                                                        <input type="text" data-toggle="datepicker" class="selector form-control input-block-level" name="data" value="<?= $dado->date; ?>" <?= !empty($_SESSION["sessiontimerevenda"])  ? ' disabled': ''; ?>>
                                                     </div>
                                                 </div>
                                                 <div class="span2">
                                                     <label>Dias de login</label>
                                                     <div class="controls">
-                                                        <input class="input-block-level" type="text"  name="dias_login"  value="<?= $dado->dias_login; ?>" >
+                                                        <input class="input-block-level" type="text"  name="dias_login"  value="<?= $dado->dias_login; ?>" <?= !empty($_SESSION["sessiontimerevenda"])  ? ' disabled': ''; ?>>
                                                     </div>
                                                 </div>
                                             </fieldset>
