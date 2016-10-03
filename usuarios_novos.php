@@ -229,6 +229,7 @@ if (FUNCOES::isAjax()) {
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>ID</th>
                             <th>Usúario</th>
                             <th>Whatsapp</th>
                         </tr>
@@ -245,7 +246,9 @@ if (FUNCOES::isAjax()) {
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                         <?= $cont; ?>
                                     </td>
-                                    <td style="width:150px;"><?=
+                                    <td style="width:20px;"><span class="label label-default"><?= $dado->id; ?></span></td>
+
+                                    <td style="width:250px;"><?=
                                         $dado->login;
                                         echo ' <span class="label label-success">' . ($dado->DiffDate) . ' dias cadastrados </span>';
                                         ?>

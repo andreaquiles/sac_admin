@@ -472,14 +472,14 @@ try {
     }
     /**
      * BOT TELEGRAM   ---- 255747822:AAFM7ZzxOeHbSRTn2_EapG4wCdIrQ-8dmQM
-     */  
+     */
     if ($data_telegram['bot_token'] && empty($response['error'])) {
         if (empty($data_telegram['users_bots_id'])) {
             $data_telegram['users_id'] = $datauser['id'];
-            $data_telegram['canal'] ="telegram";
+            $data_telegram['canal'] = "telegram";
             usuarioBO::salvarUsuario($data_telegram, 'users_bots');
         } else {
-            usuarioBO::salvarUsuario($data_telegram, 'users_bots',$data_telegram['users_bots_id']);
+            usuarioBO::salvarUsuario($data_telegram, 'users_bots', $data_telegram['users_bots_id']);
         }
     }
 } catch (Exception $ex) {
@@ -675,54 +675,71 @@ if (FUNCOES::isAjax()) {
                                 </div>
                             </div>
 
+                          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
                             <div class="panel panel-default">
-                                <h4 class="panel-title" style="padding: 4px;">
-                                    <span class="glyphicon glyphicon-info-sign"> </span> Endereço 
-                                </h4>
-                                <div class="panel-body">
-                                    <div class="form-group col-sm-5">
-                                        <label for="razao_social">Rua</label>
-                                        <input type="text" class="form-control" name="rua" placeholder="" value="<?php echo $endereco['rua']; ?>">
-                                    </div>
-                                    <div class="form-group col-sm-1">
-                                        <label for="razao_social">Número</label>
-                                        <input type="text" class="form-control" name="numero" placeholder="" value="<?php echo $endereco['numero']; ?>">
-                                    </div>
-                                    <div class="form-group col-sm-2">
-                                        <label for="razao_social">Complemento</label>
-                                        <input type="text" class="form-control" name="complemento" placeholder="" value="<?php echo $endereco['complemento']; ?>">
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label for="razao_social">Bairro</label>
-                                        <input type="text" class="form-control" name="bairro" placeholder="" value="<?php echo $endereco['bairro']; ?>">
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label for="razao_social">Cidade</label>
-                                        <input type="text" class="form-control" name="cidade" placeholder="" value="<?php echo $endereco['cidade']; ?>">
-                                    </div>
-                                    <div class="form-group col-sm-2">
-                                        <label for="razao_social">Estado</label>
-                                        <input type="text" class="form-control" name="estado" placeholder="" value="<?php echo $endereco['estado']; ?>">
-                                    </div>
-                                    <div class="form-group col-sm-2">
-                                        <label for="razao_social">Cep</label>
-                                        <input type="text" class="form-control" name="cep" placeholder="" value="<?php echo $endereco['cep']; ?>">
-                                    </div>
+                                <div class="panel-heading" role="tab" id="headingOne2">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#campos_endereco"><span class="glyphicon glyphicon-circle-arrow-down"></span> Endereço</a> <small>(Opcional)</small>
+                                    </h4>
+                                </div>
 
-                                    <div class="form-group col-sm-2">
-                                        <label for="razao_social">Telefone fixo</label>
-                                        <input type="text" class="form-control" name="tel_fixo" placeholder="" value="<?php echo $endereco['tel_fixo']; ?>">
-                                    </div>
-                                    <div class="form-group col-sm-2">
-                                        <label for="razao_social">Celular</label>
-                                        <input type="text" class="form-control" name="celular" placeholder="" value="<?php echo $endereco['celular']; ?>">
-                                    </div>
+                                <div id="campos_endereco" class="collapse 
+                                <?php
+                                echo $endereco['rua'] ||
+                                $endereco['numero'] ||
+                                $endereco['bairro'] ||
+                                $endereco['cidade'] ||
+                                $endereco['estado'] ||
+                                $endereco['cep'] ? 'in' : ''
+                                ?>"
+                                     aria-labelledby="headingOne">
+
+                                    <div class="panel-body">
+                                        <div class="form-group col-sm-5">
+                                            <label for="razao_social">Rua</label>
+                                            <input type="text" class="form-control" name="rua" placeholder="" value="<?php echo $endereco['rua']; ?>">
+                                        </div>
+                                        <div class="form-group col-sm-1">
+                                            <label for="razao_social">Número</label>
+                                            <input type="text" class="form-control" name="numero" placeholder="" value="<?php echo $endereco['numero']; ?>">
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <label for="razao_social">Complemento</label>
+                                            <input type="text" class="form-control" name="complemento" placeholder="" value="<?php echo $endereco['complemento']; ?>">
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <label for="razao_social">Bairro</label>
+                                            <input type="text" class="form-control" name="bairro" placeholder="" value="<?php echo $endereco['bairro']; ?>">
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <label for="razao_social">Cidade</label>
+                                            <input type="text" class="form-control" name="cidade" placeholder="" value="<?php echo $endereco['cidade']; ?>">
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <label for="razao_social">Estado</label>
+                                            <input type="text" class="form-control" name="estado" placeholder="" value="<?php echo $endereco['estado']; ?>">
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <label for="razao_social">Cep</label>
+                                            <input type="text" class="form-control" name="cep" placeholder="" value="<?php echo $endereco['cep']; ?>">
+                                        </div>
+
+                                        <div class="form-group col-sm-2">
+                                            <label for="razao_social">Telefone fixo</label>
+                                            <input type="text" class="form-control" name="tel_fixo" placeholder="" value="<?php echo $endereco['tel_fixo']; ?>">
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <label for="razao_social">Celular</label>
+                                            <input type="text" class="form-control" name="celular" placeholder="" value="<?php echo $endereco['celular']; ?>">
+                                        </div>
 
 
+                                    </div>
                                 </div>
                             </div>
 
-
+                          </div>
 
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="panel panel-default">
@@ -861,8 +878,8 @@ if (FUNCOES::isAjax()) {
                                         </label>
                                     </div>
                                 </div>
-                            
-                             <div class="form-group" style="margin-top:1.2em;">
+
+                                <div class="form-group" style="margin-top:1.2em;">
                                     <div class="checkbox pull-left">
                                         <label style="margin-left:1.2em;">
                                             <input type="checkbox" value="1"  name="modulo_produtos" <?= $data['modulo_produtos'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-success">Módulo produtos</span>
@@ -894,5 +911,8 @@ if (FUNCOES::isAjax()) {
         }
         ?>
         <script src="assets/js/gerenciador.min.js"></script>
+        <script>
+            NumeroInteiros('phone');
+        </script>
     </body>
 </html>

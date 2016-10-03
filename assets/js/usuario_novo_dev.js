@@ -27,5 +27,6 @@ EditarExp = function (user_id, nameForm) {
     });
 }
 resetsimpleform = function (nameForm) {
+    $("input[name='user_id']").val('');
     $('form[name="' + nameForm + '"]')[0].reset();
 }

@@ -171,6 +171,7 @@ if (FUNCOES::isAjax()) {
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>ID</th>
                             <th>Usuário</th>
                             <th>Whatsapp</th>
                         </tr>
@@ -186,7 +187,8 @@ if (FUNCOES::isAjax()) {
                                         <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                      <?= $cont; ?>
                                     </td>
-                                    <td style="width:150px;"><?= $dado->login; ?></td>
+                                    <td style="width:20px;"><span class="label label-default"><?= $dado->id; ?></span></td>
+                                    <td style="width:250px;"><?= $dado->login; ?></td>
                                     <td style="width:100px;"><span class="label label-danger" style="text-decoration: line-through;"><?= $dado->phone; ?></span></td>
                                     <td style="width:100px;" class="text-right">
                                         <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 

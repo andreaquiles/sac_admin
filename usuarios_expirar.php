@@ -172,6 +172,7 @@ if (FUNCOES::isAjax()) {
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>ID</th>
                             <th>Usúario</th>
                             <th>Whatsapp</th>
                         </tr>
@@ -182,44 +183,47 @@ if (FUNCOES::isAjax()) {
                         $dtAtual = date("Y-m-d");
                         if ($dados_expirar) {
                             foreach ($dados_expirar as $dado) {
-                                    ?>
-                                    <tr  <?php echo ($dado->DiffDate < 0 ) ? 'class="danger"' : '' ?> >
-                                        <td class="" style="width:10px;"> 
-                                            <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
-                                            <?= $cont; ?>
-                                        </td>
-                                        <td style="width:150px;"><?= $dado->login; 
-                                             if ($dado->DiffDate < 0) {
-                                                echo ' <span class="label label-danger">' . abs($dado->DiffDate) . ' dias expirado </span>';
-                                            } else {
-                                                echo ' <span class="label label-warning">' . ($dado->DiffDate) . ' dias para expirar </span>';
-                                            }
-                                            ?></td>
-                                        <td style="width:100px;"><span class="label label-default"><?= ($dado->phone); ?></span></td>
-                                        
-                                        <td style="width:100px;" class="text-right">
-                                            <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
-                                               href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario_atraso">
-                                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                            </a>
-                                            <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
-                                               href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
-                                                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                                            </a>
-                                            <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
-                                               href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
-                                                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-                                            </a>
+                                ?>
+                                <tr  <?php echo ($dado->DiffDate < 0 ) ? 'class="danger"' : '' ?> >
+                                    
+                                    <td class="" style="width:10px;"> 
+                                        <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
+                                        <?= $cont; ?>
+                                    </td>
+                                    <td style="width:20px;"><span class="label label-default"><?= $dado->id; ?></span></td>
+                                    <td style="width:250px;"><?=
+                                        $dado->login;
+                                        if ($dado->DiffDate < 0) {
+                                            echo ' <span class="label label-danger">' . abs($dado->DiffDate) . ' dias expirado </span>';
+                                        } else {
+                                            echo ' <span class="label label-warning">' . ($dado->DiffDate) . ' dias para expirar </span>';
+                                        }
+                                        ?></td>
+                                    <td style="width:100px;"><span class="label label-default"><?= ($dado->phone); ?></span></td>
 
-                                            <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
-                                               href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
-                                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                    $cont++;
-                               // }
+                                    <td style="width:100px;" class="text-right">
+                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Editar" 
+                                           href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario_atraso">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                        </a>
+                                        <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
+                                           href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
+                                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                                        </a>
+                                        <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
+                                           href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
+                                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                                        </a>
+
+                                        <a class="btn btn-danger btn-xs AjaxConfirm" data-toggle="tooltip" title="Excluir" 
+                                           href="usuario.php?action=excluir&id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php
+                                $cont++;
+                                // }
                             }
                         }
                         ?>

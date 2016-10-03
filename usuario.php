@@ -230,6 +230,7 @@ if (FUNCOES::isAjax()) {
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>ID</th>
                         <th>Usuário</th>
                         <th>Whatsapp</th>
                     </tr>
@@ -249,7 +250,8 @@ if (FUNCOES::isAjax()) {
                                     <input name="page" type="hidden"  value="<?= $dataGet['page']; ?>">
                                     <?//= $cont; ?>
                                 </td>-->
-                                <td style="width:150px;"><?= $dado->login; ?></td>
+                                <td style="width:20px;"><span class="label label-default"><?= $dado->id; ?></span></td>
+                                <td style="width:250px;"><?= $dado->login; ?></td>
                                 <td style="width:100px;">
                                     <?php if (!$dado->bloqueado) { ?>
                                         <span class="label label-default"><?= $dado->phone; ?></span>
