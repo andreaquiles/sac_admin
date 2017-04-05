@@ -194,19 +194,22 @@ if (FUNCOES::isAjax()) {
             <div class="row">
 
                 <div class="modal hide" id="myModal">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">x</button>
-                        <h3>Logout</h3>
-                    </div>
-                    <form method="post" action='logout.php' name="login_form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">x</button>
+                            <h3>Logout</h3>
+                        </div>
                         <div class="modal-body">
                             Deseja realmente sair?
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Sair</button>
-                            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
-                        </div>
-                    </form>
+                        <form method="post" action='logout.php' class="noAjax" name="login_form">
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Sair</button>
+                                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
             </div>
@@ -293,7 +296,7 @@ if (FUNCOES::isAjax()) {
                                                                                                                                 Bloquear
                                                                                                                             </label>
                                                                                                                             <label class="radio inline">
-                                                                                                                                <input type="radio" name="uso_respostas_lote" id="optionsRadios2" value="1" <?php //  echo $dado->uso_respostas_lote ? 'checked' : '';       ?>>
+                                                                                                                                <input type="radio" name="uso_respostas_lote" id="optionsRadios2" value="1" <?php //  echo $dado->uso_respostas_lote ? 'checked' : '';             ?>>
                                     
                                     
                                                                                                                             </label>
@@ -324,13 +327,13 @@ if (FUNCOES::isAjax()) {
                                                 <div class="span2">
                                                     <label>Data</label>
                                                     <div class="controls">
-                                                        <input type="text" data-toggle="datepicker" class="selector form-control input-block-level" name="data" value="<?= $dado->date; ?>" <?= !empty($_SESSION["sessiontimerevenda"])  ? ' disabled': ''; ?>>
+                                                        <input type="text" data-toggle="datepicker" class="selector form-control input-block-level" name="data" value="<?= $dado->date; ?>" <?= !empty($_SESSION["sessiontimerevenda"]) ? ' disabled' : ''; ?>>
                                                     </div>
                                                 </div>
                                                 <div class="span2">
                                                     <label>Dias de login</label>
                                                     <div class="controls">
-                                                        <input class="input-block-level" type="text"  name="dias_login"  value="<?= $dado->dias_login; ?>" <?= !empty($_SESSION["sessiontimerevenda"])  ? ' disabled': ''; ?>>
+                                                        <input class="input-block-level" type="text"  name="dias_login"  value="<?= $dado->dias_login; ?>" <?= !empty($_SESSION["sessiontimerevenda"]) ? ' disabled' : ''; ?>>
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -346,10 +349,6 @@ if (FUNCOES::isAjax()) {
                             </div><!--/.span-->
                         </div><!--/.row-fluid-->
                     </div><!--/.page-content-->
-
-
-
-
                     <div class="page-content">
                         <div class="row-fluid">
 
@@ -362,7 +361,7 @@ if (FUNCOES::isAjax()) {
 
         </div><!--/.main-content-->
     </div><!--/.main-container-->
-    <script src="../js/gerenciador.js"></script>
+        <script src="../js/gerenciador.js"></script>
 
 </body>
 </html>

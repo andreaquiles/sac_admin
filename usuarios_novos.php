@@ -89,7 +89,7 @@ try {
     }
     if (!empty($dataPostLimite)) {
         $response = array();
-        if ($dataPostLimite['data'] == NULL && empty($_SESSION["sessiontimerevenda"]) ) {
+        if ($dataPostLimite['data'] == NULL && empty($_SESSION["sessiontimerevenda"])) {
             $response['error'][] = 'Data Inválida!';
         }
         if (empty($response['error'])) {
@@ -164,7 +164,6 @@ if (FUNCOES::isAjax()) {
         <script src="../js/locales/bootstrap-datepicker.pt-BR.js"></script>
         <link href="../css/datepicker3.css" rel="stylesheet" type="text/css"/>
         <style>
-
             #footer {
                 background-color: #F5F5F5;
                 bottom: 0;
@@ -255,7 +254,7 @@ if (FUNCOES::isAjax()) {
 
                                     <td style="width:250px;"><?=
                                         $dado->login;
-                                        echo ' <span class="label label-success">' . ($dado->DiffDate) . ' dias cadastrados </span>';
+                                        echo ' <span class="label label-success">' . ($dado->DiffDate) . ' dias - ' . ($dado->data_cadastro) . ' </span>';
                                         ?>
                                     </td>
                                     <td style="width:100px;"><span class="label label-default"><?= ($dado->phone); ?></span></td>
@@ -311,9 +310,9 @@ if (FUNCOES::isAjax()) {
         <script src="assets/js/gerenciador.min.js"></script>
         <script src="assets/js/usuario_novo.min.js"></script>
         <script>
-                                                    $('select[name=planos_assinatura_id]').change(function () {
-                                                        location.href = this.value + '.php';
-                                                    });
+            $('select[name=planos_assinatura_id]').change(function () {
+                location.href = this.value + '.php';
+            });
         </script>
     </body>
 </html>

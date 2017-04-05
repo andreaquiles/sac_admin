@@ -118,8 +118,12 @@ $filterPostUser = array(
     ),
     'modulo_fatura' => array(
         'filter' => FILTER_VALIDATE_INT
+    )
+    ,
+    'modulo_cupom' => array(
+        'filter' => FILTER_VALIDATE_INT
     ),
-    'modulo_produtos' => array(
+    'modulo_delivery' => array(
         'filter' => FILTER_VALIDATE_INT
     )
 );
@@ -184,6 +188,21 @@ $filterTelegram = array(
     )
 );
 
+$filterMessenger = array(
+    'descricao_m' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'bot_token_m' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    ),
+    'users_bots_id_m' => array(
+        'filter' => FILTER_VALIDATE_INT
+    ),
+    'verify' => array(
+        'filter' => FILTER_SANITIZE_STRING
+    )
+);
+
 
 $filterGET = array(
     'action' => array(
@@ -215,6 +234,7 @@ $data = filter_input_array(INPUT_POST, $filterPostUserInfo);
 $data_endereco = filter_input_array(INPUT_POST, $filterPostEndereco);
 $data_financeiro = filter_input_array(INPUT_POST, $filterFinanceiro);
 $data_telegram = filter_input_array(INPUT_POST, $filterTelegram);
+$data_messenger = filter_input_array(INPUT_POST, $filterMessenger);
 $dataGet = filter_input_array(INPUT_GET, $filterGET);
 //print_r($dataGet);
 //
@@ -230,10 +250,9 @@ try {
 //        else if ($data['email'] == NULL) {
 //            $response['error'][] = 'E-mail Inválido!';
 //        } 
-//        else if ($datauser['login'] == NULL) {
-//            $response['error'][] = 'Preencher login';
-//        } 
-        else if ($datauser['passwlogin'] == NULL) {
+        else if ($datauser['login'] == NULL) {
+            $response['error'][] = 'Preencher login';
+        } else if ($datauser['passwlogin'] == NULL) {
             $response['error'][] = 'Preencher senha corretamanete (mínimo 5 caracteres)';
         }
 //        else if ($data['planos_assinatura_id'] == NULL) {
@@ -242,9 +261,10 @@ try {
 //        else if ($data['data_vencimento'] == NULL) {
 //            $response['error'][] = 'Data de Vencimento Inválido!';
 //        }
-        else if ($datauser['phone'] == NULL) {
-            $response['error'][] = 'Preencher whatsapp';
-        } else if ($data['tpPessoa'] == NULL) {
+//        else if ($datauser['phone'] == NULL) {
+//            $response['error'][] = 'Preencher whatsapp';
+//        } 
+        else if ($data['tpPessoa'] == NULL) {
             $response['error'][] = 'Pessoa Tipo Inválido!';
         } else if (!empty($data_org['cpf']) && $data['cpf'] == NULL) {
             $response['error'][] = 'CPF Inválido!';
@@ -282,7 +302,8 @@ try {
             }
             if (isset($_SESSION['revenda_id'])) {
                 unset($datauser['modulo_fatura']);
-                unset($datauser['modulo_produtos']);
+                unset($datauser['modulo_cupom']);
+                unset($datauser['bloqueado']);
             }
             $data_financeiro['data_vencimento'] = FUNCOES::formatarDatatoMYSQL($data_financeiro['data_vencimento']);
             unset($data['page']);
@@ -293,11 +314,11 @@ try {
                 /**
                  * ((((((((((((((((((PESSOA FISICA)))))))))))))))
                  */
-                unset($data['cnpj']);
-                unset($data['razao_social']);
-                unset($data['inscricao_estadual']);
-                unset($data['inscricao_municipal']);
-                unset($data['data_fundacao']);
+                ($data['cnpj'] = NULL);
+                ($data['razao_social'] = NULL);
+                ($data['inscricao_estadual'] = NULL);
+                ($data['inscricao_municipal'] = NULL);
+                ($data['data_fundacao'] = NULL);
                 /**
                  * verificações: cpf , email e phone existente
                  */
@@ -312,7 +333,7 @@ try {
                     /**
                      * INSERT USUÁRIO F
                      */
-                    $response['error'][] = 'Whatsapp do Usuário já cadastrado !!!';
+                    $response['error'][] = 'Whatsapp do Usuário já cadastrado (inserção) !!!';
                 } elseif (!empty($datauser['id']) && !empty($data['cpf']) && users_informacaoBO::checkCpfDiff($data['cpf'], $datauser['id'])) {
                     /**
                      * UPDATE USUÁRIO F
@@ -322,16 +343,16 @@ try {
                     /**
                      * UPDATE USUÁRIO F
                      */
-                    $response['error'][] = 'Whatsapp do Usuário já cadastrado !!!';
+                    $response['error'][] = 'Whatsapp do Usuário já cadastrado (atualização) !!! ';
                 }
                 $data['data_nascimento'] = FUNCOES::formatarDatatoMYSQL($data['data_nascimento']);
             } else {
                 /**
                  * ((((((((((((((((((((PESSOA JURIDICA))))))))))))))))))
                  */
-                unset($data['cpf']);
-                unset($data['rg']);
-                unset($data['data_nascimento']);
+                ($data['cpf'] = NULL);
+                ($data['rg'] = NULL);
+                ($data['data_nascimento'] = NULL);
                 $especifico = users_informacaoBO::getCpfCnpj($data['cnpj']);
                 if ((empty($datauser['id'])) && !empty($especifico)) {
                     /**
@@ -342,7 +363,7 @@ try {
                     /**
                      * INSERT USUÁRIO J
                      */
-                    $response['error'][] = 'Whatsapp do Usuário já cadastrado !!!';
+                    $response['error'][] = 'Whatsapp do Usuário já cadastrado (inserção) !!!';
                 } elseif (!empty($datauser['id']) && !empty($data['cnpj']) && users_informacaoBO::checkCnpjDiff($data['cnpj'], $datauser['id'])) {
                     /**
                      * UPDATE USUÁRIO J
@@ -352,7 +373,7 @@ try {
                     /**
                      * UPDATE USUÁRIO J
                      */
-                    $response['error'][] = 'Whatsapp do Usuário já cadastrado !!!';
+                    $response['error'][] = 'Whatsapp do Usuário já cadastrado (atualização) !!!';
                 }
                 $data['data_fundacao'] = FUNCOES::formatarDatatoMYSQL($data['data_fundacao']);
             }
@@ -360,18 +381,18 @@ try {
              * verificações de senhas e checar email existente
              */
             if (!empty($data['email']) && empty($response['error'])) {
-                $checkemail = users_informacaoBO::checkEmail($data['email']);
-                if (empty($datauser['id']) && !empty($checkemail)) {
-                    /**
-                     * INSERT USUÁRIO
-                     */
-                    $response['error'][] = 'Email do Cliente já existente !!!';
-                } elseif ($datauser['id'] && users_informacaoBO::checkEmailDiff($data['email'], $datauser['id'])) {
-                    /**
-                     * UPDATE USUÁRIO
-                     */
-                    $response['error'][] = 'Email do Cliente já cadastrado !!!';
-                }
+//                $checkemail = users_informacaoBO::checkEmail($data['email']);
+//                if (empty($datauser['id']) && !empty($checkemail)) {
+//                    /**
+//                     * INSERT USUÁRIO
+//                     */
+//                    $response['error'][] = 'Email do Cliente já existente !!!';
+//                } elseif ($datauser['id'] && users_informacaoBO::checkEmailDiff($data['email'], $datauser['id'])) {
+//                    /**
+//                     * UPDATE USUÁRIO
+//                     */
+//                    $response['error'][] = 'Email do Cliente já cadastrado !!!';
+//                }
             }
 
 //            if ($datauser['passwlogin'] != $data['repetir'] && empty($response['error'])) {
@@ -421,7 +442,7 @@ try {
                     $data['endereco'] = $endereco;
                     unset($data['id']);
                     unset($datauser['id']);
-
+                    $datauser['ativar_api'] = true;
                     $id = usuarioBO::salvarUsuario($datauser, 'users');
                     $data['users_id'] = $id;
                     require_once('../sealed/BO/tmpBO.php');
@@ -460,6 +481,8 @@ try {
     if ($dataGet['id']) {
         try {
             $data = users_informacaoBO::getUsuarioInfo($dataGet['id']);
+            $dataBots = usuarioBO::getUsuarioBOT('telegram', $dataGet['id']);
+            $dataBotsM = usuarioBO::getUsuarioBOT('messenger', $dataGet['id']);
             $endereco = unserialize($data['endereco']);
             $data['data_nascimento'] = FUNCOES::formatarDatatoHTML($data['data_nascimento']);
             $data['data_fundacao'] = FUNCOES::formatarDatatoHTML($data['data_fundacao']);
@@ -470,16 +493,43 @@ try {
             $response['error'][] = $err->getMessage();
         }
     }
+
+    if ($id) {
+        $user_id = $id;
+    } else {
+        $user_id = $datauser['id'];
+    }
+
+
     /**
-     * BOT TELEGRAM   ---- 255747822:AAFM7ZzxOeHbSRTn2_EapG4wCdIrQ-8dmQM
+     * BOT TELEGRAM
      */
-    if ($data_telegram['bot_token'] && empty($response['error'])) {
+    if ($data_telegram['descricao'] && empty($response['error'])) {
         if (empty($data_telegram['users_bots_id'])) {
-            $data_telegram['users_id'] = $datauser['id'];
+            $data_telegram['users_id'] = $user_id;
             $data_telegram['canal'] = "telegram";
             usuarioBO::salvarUsuario($data_telegram, 'users_bots');
         } else {
             usuarioBO::salvarUsuario($data_telegram, 'users_bots', $data_telegram['users_bots_id']);
+        }
+    }
+
+
+    /**
+     * BOT MESSENGER
+     */
+    if ($data_messenger['descricao_m'] && empty($response['error'])) {
+        $data_m = [];
+        $data_m['users_id'] = $user_id;
+        $data_m['canal'] = "messenger";
+        $data_m['bot_token'] = $data_messenger['bot_token_m'];
+        $data_m['descricao'] = $data_messenger['descricao_m'];
+        $data_m['verify'] = $data_messenger['verify'];
+        if (empty($data_messenger['users_bots_id_m'])) {
+            usuarioBO::salvarUsuario($data_m, 'users_bots');
+        } else {
+            $data_m['users_bots_id'] = $data_messenger['users_bots_id_m'];
+            usuarioBO::salvarUsuario($data_m, 'users_bots', $data_m['users_bots_id']);
         }
     }
 } catch (Exception $ex) {
@@ -665,81 +715,106 @@ if (FUNCOES::isAjax()) {
                                 <div class="panel-body">
                                     <div class="form-group col-sm-5">
                                         <label for="razao_social">Bot</label>
-                                        <input type="hidden"  name="users_bots_id" value="<?php echo $data['users_bots_id']; ?>">
-                                        <input type="text" class="form-control" name="descricao" placeholder="" value="<?php echo $data['descricao']; ?>">
+                                        <input type="hidden"  name="canal" value="<?php echo $dataBots->canal; ?>">
+                                        <input type="hidden"  name="users_bots_id" value="<?php echo $dataBots->users_bots_id; ?>">
+                                        <input type="text" class="form-control" name="descricao" placeholder="" value="<?php echo $dataBots->descricao; ?>">
                                     </div>
                                     <div class="form-group col-sm-7">
                                         <label for="razao_social">Token</label>
-                                        <input type="text" class="form-control" name="bot_token" placeholder="" value="<?php echo $data['bot_token']; ?>">
+                                        <input type="text" class="form-control" name="bot_token" placeholder="" value="<?php echo $dataBots->bot_token; ?>">
                                     </div>
                                 </div>
                             </div>
-
-                          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
                             <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingOne2">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" href="#campos_endereco"><span class="glyphicon glyphicon-circle-arrow-down"></span> Endereço</a> <small>(Opcional)</small>
-                                    </h4>
-                                </div>
-
-                                <div id="campos_endereco" class="collapse 
-                                <?php
-                                echo $endereco['rua'] ||
-                                $endereco['numero'] ||
-                                $endereco['bairro'] ||
-                                $endereco['cidade'] ||
-                                $endereco['estado'] ||
-                                $endereco['cep'] ? 'in' : ''
-                                ?>"
-                                     aria-labelledby="headingOne">
-
-                                    <div class="panel-body">
-                                        <div class="form-group col-sm-5">
-                                            <label for="razao_social">Rua</label>
-                                            <input type="text" class="form-control" name="rua" placeholder="" value="<?php echo $endereco['rua']; ?>">
-                                        </div>
-                                        <div class="form-group col-sm-1">
-                                            <label for="razao_social">Número</label>
-                                            <input type="text" class="form-control" name="numero" placeholder="" value="<?php echo $endereco['numero']; ?>">
-                                        </div>
-                                        <div class="form-group col-sm-2">
-                                            <label for="razao_social">Complemento</label>
-                                            <input type="text" class="form-control" name="complemento" placeholder="" value="<?php echo $endereco['complemento']; ?>">
-                                        </div>
-                                        <div class="form-group col-sm-4">
-                                            <label for="razao_social">Bairro</label>
-                                            <input type="text" class="form-control" name="bairro" placeholder="" value="<?php echo $endereco['bairro']; ?>">
-                                        </div>
-                                        <div class="form-group col-sm-4">
-                                            <label for="razao_social">Cidade</label>
-                                            <input type="text" class="form-control" name="cidade" placeholder="" value="<?php echo $endereco['cidade']; ?>">
-                                        </div>
-                                        <div class="form-group col-sm-2">
-                                            <label for="razao_social">Estado</label>
-                                            <input type="text" class="form-control" name="estado" placeholder="" value="<?php echo $endereco['estado']; ?>">
-                                        </div>
-                                        <div class="form-group col-sm-2">
-                                            <label for="razao_social">Cep</label>
-                                            <input type="text" class="form-control" name="cep" placeholder="" value="<?php echo $endereco['cep']; ?>">
-                                        </div>
-
-                                        <div class="form-group col-sm-2">
-                                            <label for="razao_social">Telefone fixo</label>
-                                            <input type="text" class="form-control" name="tel_fixo" placeholder="" value="<?php echo $endereco['tel_fixo']; ?>">
-                                        </div>
-                                        <div class="form-group col-sm-2">
-                                            <label for="razao_social">Celular</label>
-                                            <input type="text" class="form-control" name="celular" placeholder="" value="<?php echo $endereco['celular']; ?>">
-                                        </div>
-
-
+                                <h4 class="panel-title" style="padding: 4px;">
+                                    <span class="glyphicon glyphicon-info-sign"> </span> Messenger 
+                                </h4>
+                                <div class="panel-body">
+                                    <div class="form-group col-sm-3">
+                                        <label for="razao_social">Bot</label>
+                                        <input type="hidden"  name="canal_m" value="<?php echo $dataBotsM->canal; ?>">
+                                        <input type="hidden"  name="users_bots_id_m" value="<?php echo $dataBotsM->users_bots_id; ?>">
+                                        <input type="text" class="form-control" name="descricao_m" placeholder="" value="<?php echo $dataBotsM->descricao; ?>">
                                     </div>
+                                    <div class="form-group col-sm-7">
+                                        <label for="razao_social">Token</label>
+                                        <input type="text" class="form-control" name="bot_token_m" placeholder="" value="<?php echo $dataBotsM->bot_token; ?>">
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <label for="razao_social">Verificador</label>
+                                        <input type="text" class="form-control" name="verify" placeholder="" value="<?php echo $dataBotsM->verify; ?>">
+                                    </div>
+
+
                                 </div>
+
                             </div>
 
-                          </div>
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne2">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" href="#campos_endereco"><span class="glyphicon glyphicon-circle-arrow-down"></span> Endereço</a> <small>(Opcional)</small>
+                                        </h4>
+                                    </div>
+
+                                    <div id="campos_endereco" class="collapse 
+                                    <?php
+                                    echo $endereco['rua'] ||
+                                    $endereco['numero'] ||
+                                    $endereco['bairro'] ||
+                                    $endereco['cidade'] ||
+                                    $endereco['estado'] ||
+                                    $endereco['cep'] ? 'in' : ''
+                                    ?>"
+                                         aria-labelledby="headingOne">
+
+                                        <div class="panel-body">
+                                            <div class="form-group col-sm-5">
+                                                <label for="razao_social">Rua</label>
+                                                <input type="text" class="form-control" name="rua" placeholder="" value="<?php echo $endereco['rua']; ?>">
+                                            </div>
+                                            <div class="form-group col-sm-1">
+                                                <label for="razao_social">Número</label>
+                                                <input type="text" class="form-control" name="numero" placeholder="" value="<?php echo $endereco['numero']; ?>">
+                                            </div>
+                                            <div class="form-group col-sm-2">
+                                                <label for="razao_social">Complemento</label>
+                                                <input type="text" class="form-control" name="complemento" placeholder="" value="<?php echo $endereco['complemento']; ?>">
+                                            </div>
+                                            <div class="form-group col-sm-4">
+                                                <label for="razao_social">Bairro</label>
+                                                <input type="text" class="form-control" name="bairro" placeholder="" value="<?php echo $endereco['bairro']; ?>">
+                                            </div>
+                                            <div class="form-group col-sm-4">
+                                                <label for="razao_social">Cidade</label>
+                                                <input type="text" class="form-control" name="cidade" placeholder="" value="<?php echo $endereco['cidade']; ?>">
+                                            </div>
+                                            <div class="form-group col-sm-2">
+                                                <label for="razao_social">Estado</label>
+                                                <input type="text" class="form-control" name="estado" placeholder="" value="<?php echo $endereco['estado']; ?>">
+                                            </div>
+                                            <div class="form-group col-sm-2">
+                                                <label for="razao_social">Cep</label>
+                                                <input type="text" class="form-control" name="cep" placeholder="" value="<?php echo $endereco['cep']; ?>">
+                                            </div>
+
+                                            <div class="form-group col-sm-2">
+                                                <label for="razao_social">Telefone fixo</label>
+                                                <input type="text" class="form-control" name="tel_fixo" placeholder="" value="<?php echo $endereco['tel_fixo']; ?>">
+                                            </div>
+                                            <div class="form-group col-sm-2">
+                                                <label for="razao_social">Celular</label>
+                                                <input type="text" class="form-control" name="celular" placeholder="" value="<?php echo $endereco['celular']; ?>">
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
 
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="panel panel-default">
@@ -866,7 +941,7 @@ if (FUNCOES::isAjax()) {
                                 <div class="form-group" style="margin-top:1.2em;">
                                     <div class="checkbox pull-left">
                                         <label>
-                                            <input type="checkbox" value="1"  name="bloqueado" <?= $data['bloqueado'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-danger">Bloqueado</span>
+                                            <input type="checkbox" value="1"  name="bloqueado" <?= $data['bloqueado'] ? " checked" : "" ?>><span style="font-size: 14px;" class="label label-danger">Bloqueado</span>
                                         </label>
                                     </div>
                                 </div>
@@ -874,7 +949,7 @@ if (FUNCOES::isAjax()) {
                                 <div class="form-group" style="margin-top:1.2em;">
                                     <div class="checkbox pull-left">
                                         <label style="margin-left:1.2em;">
-                                            <input type="checkbox" value="1"  name="modulo_fatura" <?= $data['modulo_fatura'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-success">Módulo fatura</span>
+                                            <input type="checkbox" value="1"  name="modulo_fatura" <?= $data['modulo_fatura'] ? " checked" : "" ?>><span style="font-size: 14px;" class="label label-success">Módulo fatura</span>
                                         </label>
                                     </div>
                                 </div>
@@ -882,7 +957,15 @@ if (FUNCOES::isAjax()) {
                                 <div class="form-group" style="margin-top:1.2em;">
                                     <div class="checkbox pull-left">
                                         <label style="margin-left:1.2em;">
-                                            <input type="checkbox" value="1"  name="modulo_produtos" <?= $data['modulo_produtos'] ? "checked" : "" ?>><span style="font-size: 14px;" class="label label-success">Módulo produtos</span>
+                                            <input type="checkbox" value="1"  name="modulo_cupom" <?= $data['modulo_cupom'] ? " checked" : "" ?> ><span style="font-size: 14px;" class="label label-success">Módulo cupom</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="margin-top:1.2em;">
+                                    <div class="checkbox pull-left">
+                                        <label style="margin-left:1.2em;">
+                                            <input type="checkbox" value="1"  name="modulo_delivery" <?= $data['modulo_delivery'] ? " checked" : "" ?> ><span style="font-size: 14px;" class="label label-success">Módulo delivery</span>
                                         </label>
                                     </div>
                                 </div>
@@ -893,10 +976,7 @@ if (FUNCOES::isAjax()) {
                         </div>
                     </div>
                 </form>
-
             </div>
-
-
         </div>
 
         <div id="footer" class="navbar-default">

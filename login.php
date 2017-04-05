@@ -52,28 +52,33 @@ if (FUNCOES::isAjax()) {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="../js/jquery.min.js"></script>
+        <script src="../public/assets/js/bootstrap-modal.js"></script>
         <script src="../public/assets/js/bootstrap.min.js"></script>
         <script src="../public/assets/js/jquery.forms.js"></script>
         <script src="../public/assets/js/bootbox.min.js"></script>
         <script src="../public/assets/js/manager.js"></script>
         <link href="../public/assets/css/bootstrap.min.css" rel="stylesheet">
         <style>
-
             #login img{
                 margin: 10px 0;
             }
             #login .center {
                 text-align: center;
             }
-
             #login .login {
+
                 max-width: 300px;
                 margin: 35px auto;
+                text-align: center;
+                width: 1000px;
             }
 
             #login .login-form{
                 padding:0px 25px;
+            }
+            .container, .container {
+                width: 350px;
             }
         </style>
     </head>
@@ -81,7 +86,7 @@ if (FUNCOES::isAjax()) {
         <div id="login" class="container">
             <div class="row-fluid">
                 <div class="span12">
-                    <div class="login well well-small">
+                    <div class="login well">
                         <div id="alerta">
                             <?php
                             if (isset($response['error'])) {
@@ -135,8 +140,8 @@ if (FUNCOES::isAjax()) {
                             </div>
                         </form>
                     </div><!--/.login-->
-                </div><!--/.span12-->
-            </div><!--/.row-fluid-->
+                </div>
+            </div>
 
         </div>
     </body>
