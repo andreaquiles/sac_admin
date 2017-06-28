@@ -239,8 +239,7 @@ if (FUNCOES::isAjax()) {
                     <?php
                     $cont = 1;
                     if ($dadosusuarios) {
-                        foreach ($dadosusuarios as $dado) {
-                            ?>
+                        foreach ($dadosusuarios as $dado) {?>
                             <tr <?php echo $dado->bloqueado ? 'class=""' : '' ?> >
                                 <td class="" width='7px'> 
                                     <input name="selecao" value="<?php echo $dado->id; ?>" type="checkbox">
@@ -264,10 +263,12 @@ if (FUNCOES::isAjax()) {
                                        href="usuarios_editar.php?id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&pgname=usuario">
                                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                     </a>
+                                    
                                     <a class="btn btn-default btn-xs" data-toggle="tooltip" title="Atividades" 
                                        href="atividades.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>&login=<?= urlencode($dado->login); ?>">
                                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                                     </a>
+                                    
                                     <a class="btn btn-default btn-xs " data-toggle="tooltip" title="Configurações" 
                                        href="config.php?user_id=<?= $dado->id; ?>&page=<?= $dataGet['page']; ?>">
                                         <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>

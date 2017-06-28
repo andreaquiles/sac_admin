@@ -659,7 +659,7 @@ if (FUNCOES::isAjax()) {
                                 <div class="form-group col-sm-2">
                                     <label for="data_fundacao">Plano de assinatura</label>
                                     <select class="form-control" name="planos_assinatura_id">
-                                        <option value="" selected="">selecione</option>
+                                        <option value="" selected="">Nenhum</option>
                                         <?php
                                         if (is_array($planos)) {
                                             foreach ($planos as $plano) {
