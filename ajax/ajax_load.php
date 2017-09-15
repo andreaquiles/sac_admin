@@ -12,8 +12,6 @@ $filter = array(
 );
 $dataGet = filter_input_array(INPUT_POST, $filter);
 
-
-
 /**
  * autenticações 
  */
